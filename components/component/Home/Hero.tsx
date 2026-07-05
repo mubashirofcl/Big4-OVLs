@@ -24,12 +24,13 @@ export default function Hero() {
     if (!imgRef.current) return;
 
     let current = 0;
-    let tl: gsap.core.Timeline;
+    let tl: gsap.core.Timeline | null = null;
+    let isMounted = true;
 
     const distance = window.innerHeight * 0.45;
 
     const playAnimation = () => {
-      if (!imgRef.current) return;
+      if (!imgRef.current || !isMounted) return;
 
       gsap.set(imgRef.current, {
         y: distance,
@@ -40,8 +41,11 @@ export default function Hero() {
 
       tl = gsap.timeline({
         onComplete: () => {
+          if (!isMounted) return;
+
           current = (current + 1) % images.length;
           setIndex(current);
+          playAnimation();
         },
       });
 
@@ -53,9 +57,7 @@ export default function Hero() {
         duration: 1.6,
         ease: "expo.out",
       })
-
         .to({}, { duration: 0.7 })
-
         .to(imgRef.current, {
           y: -distance,
           opacity: 0,
@@ -63,16 +65,15 @@ export default function Hero() {
           scale: 0.8,
           duration: 1.6,
           ease: "expo.in",
-        })
-
-        .call(() => {
-          playAnimation();
         });
     };
 
     playAnimation();
 
-    return () => tl?.kill();
+    return () => {
+      isMounted = false;
+      tl?.kill();
+    };
   }, []);
 
   return (
