@@ -1,9 +1,9 @@
-"use client"
+"use client";
+
 import { useEffect, useRef } from "react";
-import Image from "next/image";
-import { DoorClosed, Sofa, Lamp, UtensilsCrossed } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Navbar from "@/components/component/Home/Navbar";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,19 +19,24 @@ const brands = [
         image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&q=80",
     },
     {
+        name: "DIANI",
+        href: "#",
+        image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80",
+    },
+    {
         name: "FIAM",
         href: "#",
         image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80",
     },
     {
+        name: "SANGIACOMO",
+        href: "#",
+        image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80",
+    },
+    {
         name: "MOLTENI&C",
         href: "#",
         image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80",
-    },
-    {
-        name: "POLIFORM",
-        href: "#",
-        image: "https://images.unsplash.com/photo-1616594039964-ae9021ef2b31?w=1200&q=80",
     },
     {
         name: "RIMADESIO",
@@ -42,121 +47,122 @@ const brands = [
 
 const filters = [
     { label: "ALL", icon: null },
-    { label: "WARDROBES", icon: DoorClosed },
-    { label: "FURNITURE", icon: Sofa },
-    { label: "APPLIENCES", icon: Lamp },
-    { label: "KITCHEN & SYSTEMS", icon: UtensilsCrossed },
+    { label: "WARDROBES", icon: "wardrobe" },
+    { label: "FURNITURE", icon: "furniture" },
+    { label: "APPLIENCES", icon: "appliance" },
 ];
 
 export default function OurBrands() {
-    const sectionRef = useRef<HTMLElement>(null);
-    const wrapperRef = useRef<HTMLDivElement>(null);
-    const trackRef = useRef<HTMLDivElement>(null);
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const railRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const mm = gsap.matchMedia();
+        const section = sectionRef.current;
+        const rail = railRef.current;
+        if (!section || !rail) return;
 
-        // Pinned horizontal-scroll-reveal — desktop/tablet only.
-        // Mobile keeps the native swipe carousel (see className below).
-        mm.add("(min-width: 768px)", () => {
-            const track = trackRef.current;
-            const wrapper = wrapperRef.current;
-            const section = sectionRef.current;
-            if (!track || !wrapper || !section) return;
+        const ctx = gsap.context(() => {
+            const cards = gsap.utils.toArray<HTMLElement>(".brand-card", rail);
 
-            const scrollAmount = () => track.scrollWidth - wrapper.offsetWidth;
-
-            const tween = gsap.to(track, {
-                x: () => -scrollAmount(),
-                ease: "none",
-                scrollTrigger: {
-                    trigger: section,
-                    start: "top top",
-                    end: () => "+=" + scrollAmount(),
-                    scrub: 1,
-                    pin: true,
-                    anticipatePin: 1,
-                    invalidateOnRefresh: true,
-                },
+            // Scroll-scrubbed effect: cards travel right -> left in place,
+            // tied directly to how far the user has scrolled through the
+            // section (not a one-off play-once entrance). Each card gets a
+            // slightly different starting offset + scrub speed so they don't
+            // all move in lockstep — gives a subtle parallax feel.
+            // The rail itself is still freely swipeable/scrollable by the
+            // user on top of this; the page never gets pinned or hijacked.
+            cards.forEach((card, i) => {
+                const offset = 60 + (i % 3) * 25; // vary starting distance a bit
+                gsap.fromTo(
+                    card,
+                    { x: offset },
+                    {
+                        x: 0,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top bottom",   // begins as section enters viewport
+                            end: "bottom top",     // finishes as section leaves viewport
+                            scrub: 1 + (i % 3) * 0.3, // slight stagger in scrub speed
+                        },
+                    }
+                );
             });
+        }, section);
 
-            return () => {
-                tween.scrollTrigger?.kill();
-                tween.kill();
-            };
-        });
-
-        return () => mm.revert();
+        return () => ctx.revert();
     }, []);
 
     return (
-        <section
-            ref={sectionRef}
-            className="bg-black text-white py-16 md:py-20 lg:py-24 overflow-hidden"
-        >
-            {/* Heading */}
-            <h2 className="text-center font-bold uppercase tracking-widest text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-10 md:mb-14 bg-gradient-to-b from-white to-neutral-500 bg-clip-text text-transparent">
-                Our Brands
-            </h2>
+        <div className="bg-white min-h-screen w-full">
+            <style>{`
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    `}</style>
 
-            {/* Wrapper clips the track on desktop; on mobile it's just the scroll container */}
-            <div
-                ref={wrapperRef}
-                className="
-                    overflow-x-auto md:overflow-hidden
-                    [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
-                "
-            >
+            <Navbar />
+
+            <section ref={sectionRef} className="relative w-full">
+                {/* Heading */}
+                <div className="pt-28 pb-6 md:pb-10 flex justify-center items-center uppercase">
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tight text-background">
+                        our brands
+                    </h1>
+                </div>
+
+                {/* Brand Rail */}
                 <div
-                    ref={trackRef}
-                    className="
-                        flex gap-4 snap-x snap-mandatory px-4 pb-2
-                        md:snap-none md:gap-6 md:px-8 lg:gap-10 lg:px-16 md:w-max
-                    "
+                    ref={railRef}
+                    className="no-scrollbar w-full overflow-x-auto overflow-y-hidden py-8"
                 >
-                    {brands.map((brand) => (
-                        <a
-                            key={brand.name}
-                            href={brand.href}
-                            className="
-                                group shrink-0 snap-start
-                                w-[78%] sm:w-[60%] md:w-[420px] lg:w-[520px]
-                            "
+                    <div className="flex w-max items-start gap-1 md:gap-6 px-1 md:px-6">
+                        {brands.map((brand) => (
+                            <a
+                                key={brand.name}
+                                href={brand.href}
+                                className="brand-card group relative flex-shrink-0 flex flex-col snap-start"
+                                style={{
+                                    width: "clamp(220px,40vw,380px)",
+                                }}
+                            >
+                                <div className="relative w-full aspect-[4/3] overflow-hidden bg-neutral-900">
+                                    <img
+                                        src={brand.image}
+                                        alt={brand.name}
+                                        draggable={false}
+                                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    />
+                                </div>
+
+                                <div className="pt-3">
+                                    <span className="text-xs md:text-lg font-bold uppercase tracking-tight text-background">
+                                        {brand.name}
+                                    </span>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Filter Pills */}
+            <section className="pt-10 pb-10">
+                <div className="flex flex-wrap justify-center gap-2">
+                    {filters.map((filter) => (
+                        <button
+                            key={filter.label}
+                            className="rounded-full border border-background/30 px-2 py-2 text-[8px] md:text-sm font-semibold uppercase transition hover:bg-black text-black hover:text-white"
                         >
-                            <div className="relative w-full h-64 md:h-80 lg:h-[420px] overflow-hidden">
-                                <Image
-                                    src={brand.image}
-                                    alt={brand.name}
-                                    fill
-                                    unoptimized
-                                    sizes="(max-width: 768px) 80vw, 40vw"
-                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                />
-                            </div>
-                            <p className="mt-4 font-bold uppercase tracking-wide text-lg md:text-xl text-white">
-                                {brand.name}
-                            </p>
-                        </a>
+                            {filter.label}
+                        </button>
                     ))}
                 </div>
-            </div>
-
-            {/* Filter pills */}
-            <div className="mt-10 md:mt-12 flex flex-wrap justify-center gap-3 px-4">
-                {filters.map(({ label, icon: Icon }) => (
-                    <button
-                        key={label}
-                        className="
-                            flex items-center gap-2 rounded-full border border-white/60
-                            px-5 py-2.5 text-xs md:text-sm font-semibold uppercase tracking-wide text-white
-                            hover:bg-white hover:text-black transition-colors
-                        "
-                    >
-                        {Icon && <Icon size={16} strokeWidth={1.75} />}
-                        {label}
-                    </button>
-                ))}
-            </div>
-        </section>
+            </section>
+        </div>
     );
 }
