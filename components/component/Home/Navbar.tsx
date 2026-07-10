@@ -20,7 +20,7 @@ export default function Navbar() {
       // Navbar fades in
       tl.from(navRef.current, {
         opacity: 0,
-        duration: 0.4,
+        duration: 0.3,
         ease: "power2.out",
       });
 
@@ -31,7 +31,7 @@ export default function Navbar() {
           y: 100,
           opacity: 0,
           scale: 0.95,
-          duration: 1.3,
+          duration: 0.4,
           ease: "expo.out",
         },
         "-=0.2"
@@ -44,7 +44,7 @@ export default function Navbar() {
           y: 35,
           opacity: 0,
           stagger: 0.12,
-          duration: 0.8,
+          duration: 0.5,
           ease: "power4.out",
         },
         "-=0.65"
@@ -106,7 +106,7 @@ export default function Navbar() {
             alt="Logo"
             width={160}
             height={50}
-            className="h-12 w-auto sm:h-12 lg:h-14 xl:h-14 cursor-pointer"
+            className="hidden lg:flex h-12 w-auto sm:h-12 lg:h-14 xl:h-14 cursor-pointer"
             priority
           />
         </Link>
@@ -150,7 +150,7 @@ export default function Navbar() {
               alt="Menu"
               width={42}
               height={42}
-              className="nav-menu h-10 w-10 xl:h-10 xl:w-10 pb-3 cursor-pointer"
+              className="nav-menu h-10 w-10 xl:h-10 xl:w-10 pb-2 lg:pb-1 cursor-pointer"
             />
 
           </div>
@@ -158,22 +158,40 @@ export default function Navbar() {
         </nav>
 
         {/* Mobile Navigation */}
-        <div className="flex items-center gap-3 sm:gap-5 lg:hidden">
+        <div className="flex w-full justify-between items-center gap-3 sm:gap-5 lg:hidden">
 
-          <Link
-            href="/catalog"
-            className="mobile-btn cursor-pointer border border-white bg-white px-3 py-2 sm:px-5 sm:py-2.5 text-[8px] font-semibold uppercase text-black transition-all duration-300 ease-in-out hover:bg-black hover:text-white hover:border-black"
-          >
-            Catalog
-          </Link>
+          <div className="">
+            <Link href="/" className="nav-logo">
+              <Image
+                src="/logo1.png"
+                alt="Logo"
+                width={160}
+                height={50}
+                className=" h-12 w-auto sm:h-12 lg:h-14 xl:h-14 cursor-pointer"
+                priority
+              />
+            </Link>
+          </div>
 
-          <Image
-            src="/677276fd561b48d392692df4_burger-icon.svg"
-            alt="Menu"
-            width={40}
-            height={40}
-            className="mobile-menu h-8 w-8 sm:h-10 sm:w-10 cursor-pointer"
-          />
+          <div className="flex gap-4">
+
+            <div className="mobile-btn">
+              <Link
+                href="/catalog"
+                className=" cursor-pointer border border-white bg-white px-3 py-2 sm:px-5 sm:py-2.5 text-[8px] font-semibold uppercase text-black transition-all duration-300 ease-in-out hover:bg-black hover:text-white hover:border-black"
+              >
+                Catalog
+              </Link>
+            </div>
+
+            <Image
+              src="/677276fd561b48d392692df4_burger-icon.svg"
+              alt="Menu"
+              width={40}
+              height={40}
+              className="mobile-menu h-8 w-8 sm:h-10 sm:w-10 cursor-pointer"
+            />
+          </div>
 
         </div>
 

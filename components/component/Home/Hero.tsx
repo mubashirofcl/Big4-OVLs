@@ -6,8 +6,8 @@ import gsap from "gsap";
 
 const images = [
   // "/11.png",
-  "/33.png",
-  "/22.png",
+  // "/33.png",
+  // "/22.png",
   // "/44.png",
   "/677276fd561b48d392692e3b_LEATHER-min.png",
   "/677276fd561b48d392692e3c_FABRIC-min.png",
