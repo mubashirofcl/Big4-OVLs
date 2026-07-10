@@ -19,6 +19,8 @@ const images = [
 export default function Hero() {
   const imgRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
+  const line1Ref = useRef<HTMLDivElement>(null);
+  const line2Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!imgRef.current) return;
@@ -28,6 +30,20 @@ export default function Hero() {
     let isMounted = true;
 
     const distance = window.innerHeight * 0.45;
+
+    gsap.set([line1Ref.current, line2Ref.current], {
+      y: 120,
+      opacity: 0,
+    });
+
+    gsap.to([line1Ref.current, line2Ref.current], {
+      y: 0,
+      opacity: 1,
+      duration: 1.2,
+      ease: "power4.out",
+      stagger: 0.12,
+      delay: 0.7,
+    });
 
     const playAnimation = () => {
       if (!imgRef.current || !isMounted) return;
@@ -109,25 +125,30 @@ export default function Hero() {
 
         <h1
           className="
-            text-center
-            uppercase
-            font-black
-            leading-[1.0]
-            tracking-[-0.04em]
-            mix-blend-difference
-            select-none
+    text-center
+    uppercase
+    font-black
+    leading-[1.0]
+    tracking-[-0.04em]
+    mix-blend-difference
+    select-none
+    font-bold
 
-            text-[10vw]
-            sm:text-[10vw]
-            md:text-[10vw]
-            lg:text-[8vw]
-            xl:text-[7vw]
-            2xl:text-[8vw]
-          "
+    text-[10vw]
+    sm:text-[10vw]
+    md:text-[10vw]
+    lg:text-[8vw]
+    xl:text-[7vw]
+    2xl:text-[7vw]
+  "
         >
-          ELEVATE
-          <br />
-          LIVING
+          <div className="overflow-hidden">
+            <div ref={line1Ref}>Living</div>
+          </div>
+
+          <div className="overflow-hidden">
+            <div ref={line2Ref}>Experience</div>
+          </div>
         </h1>
 
       </div>

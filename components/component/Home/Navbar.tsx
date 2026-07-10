@@ -1,10 +1,38 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import NavLink from "./NavLink";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 
 export default function Navbar() {
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!navRef.current) return;
+
+    gsap.fromTo(
+      navRef.current,
+      {
+        y: 80,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.2,
+        ease: "power4.out",
+        delay: 1.2, // Match this with your page loader duration
+      }
+    );
+  }, []);
+
   return (
-    <header className="fixed top-0 left-0 z-50 w-full">
+    <header
+      ref={navRef}
+      className="fixed top-0 left-0 z-50 w-full"
+    >
       <div className="mx-auto flex h-16 sm:h-20 lg:h-24 items-center justify-between px-6 sm:px-6 lg:px-10 xl:px-16 py-12 lg:py-20">
 
         {/* Logo */}
@@ -32,29 +60,7 @@ export default function Navbar() {
 
             <NavLink title="Contact" href="/contact" />
 
-            <Link
-              href="/catalog"
-              className="
-                cursor-pointer
-                border
-                border-white
-                bg-white
-                px-4
-                py-2.5
-                text-[8px]
-                font-semibold
-                uppercase
-                text-black
-                transition-all
-                duration-300
-                ease-in-out
-                hover:bg-black
-                hover:text-white
-                hover:border-black
-              "
-            >
-              Catalog
-            </Link>
+            
 
           </div>
 
