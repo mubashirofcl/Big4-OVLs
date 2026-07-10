@@ -12,20 +12,84 @@ export default function Navbar() {
   useEffect(() => {
     if (!navRef.current) return;
 
-    gsap.fromTo(
-      navRef.current,
-      {
-        y: 80,
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        delay: 1.2, // match your loader
+      });
+
+      // Navbar fades in
+      tl.from(navRef.current, {
         opacity: 0,
-      },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1.2,
-        ease: "power4.out",
-        delay: 1.2, // Match this with your page loader duration
-      }
-    );
+        duration: 0.4,
+        ease: "power2.out",
+      });
+
+      // Logo
+      tl.from(
+        ".nav-logo",
+        {
+          y: 100,
+          opacity: 0,
+          scale: 0.95,
+          duration: 1.3,
+          ease: "expo.out",
+        },
+        "-=0.2"
+      );
+
+      // Navigation Links
+      tl.from(
+        ".nav-link",
+        {
+          y: 35,
+          opacity: 0,
+          stagger: 0.12,
+          duration: 0.8,
+          ease: "power4.out",
+        },
+        "-=0.65"
+      );
+
+      // Right Menu Icon
+      tl.from(
+        ".nav-menu",
+        {
+          x: 60,
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.9,
+          ease: "back.out(1.8)",
+        },
+        "-=0.7"
+      );
+
+      // Mobile Button
+      tl.from(
+        ".mobile-btn",
+        {
+          y: 20,
+          opacity: 0,
+          duration: 0.7,
+          ease: "power3.out",
+        },
+        "<"
+      );
+
+      // Mobile Burger
+      tl.from(
+        ".mobile-menu",
+        {
+          x: 30,
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.7,
+          ease: "back.out(1.8)",
+        },
+        "-=0.5"
+      );
+    }, navRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -36,7 +100,7 @@ export default function Navbar() {
       <div className="mx-auto flex h-16 sm:h-20 lg:h-24 items-center justify-between px-6 sm:px-6 lg:px-10 xl:px-16 py-12 lg:py-20">
 
         {/* Logo */}
-        <Link href="/">
+        <Link href="/" className="nav-logo">
           <Image
             src="/logo1.png"
             alt="Logo"
@@ -52,17 +116,32 @@ export default function Navbar() {
 
           <div className="flex items-center gap-8 xl:gap-8">
 
-            <NavLink title="Home" href="/" />
+            <div className="nav-link">
+              <NavLink title="Home" href="/" />
+            </div>
 
-            <NavLink title="About" href="/about" />
+            <div className="nav-link">
+              <NavLink title="About" href="/about" />
+            </div>
 
-            <NavLink title="Brands" href="/brands" />
+            <div className="nav-link">
+              <NavLink title="Brands" href="/brands" />
+            </div>
 
-            <NavLink title="Contact" href="/contact" />
+            <div className="nav-link">
+              <NavLink title="Contact" href="/contact" />
+            </div>
 
-            
-
+            <div className="nav-link">
+              <Link
+                href="/catalog"
+                className=" cursor-pointer border border-white bg-white px-3 py-2 sm:px-5 sm:py-2.5 text-[8px] font-semibold uppercase text-black transition-all duration-300 ease-in-out hover:bg-black hover:text-white hover:border-white"
+              >
+                Catalog
+              </Link>
+            </div>
           </div>
+
 
           <div className="ml-14 flex items-center gap-20">
 
@@ -71,7 +150,7 @@ export default function Navbar() {
               alt="Menu"
               width={42}
               height={42}
-              className="h-10 w-10 xl:h-10 xl:w-10 pb-3 cursor-pointer"
+              className="nav-menu h-10 w-10 xl:h-10 xl:w-10 pb-3 cursor-pointer"
             />
 
           </div>
@@ -83,26 +162,7 @@ export default function Navbar() {
 
           <Link
             href="/catalog"
-            className="
-              cursor-pointer
-              border
-              border-white
-              bg-white
-              px-3
-              py-2
-              sm:px-5
-              sm:py-2.5
-              text-[8px]
-              font-semibold
-              uppercase
-              text-black
-              transition-all
-              duration-300
-              ease-in-out
-              hover:bg-black
-              hover:text-white
-              hover:border-black
-            "
+            className="mobile-btn cursor-pointer border border-white bg-white px-3 py-2 sm:px-5 sm:py-2.5 text-[8px] font-semibold uppercase text-black transition-all duration-300 ease-in-out hover:bg-black hover:text-white hover:border-black"
           >
             Catalog
           </Link>
@@ -112,7 +172,7 @@ export default function Navbar() {
             alt="Menu"
             width={40}
             height={40}
-            className="h-8 w-8 sm:h-10 sm:w-10 cursor-pointer"
+            className="mobile-menu h-8 w-8 sm:h-10 sm:w-10 cursor-pointer"
           />
 
         </div>
