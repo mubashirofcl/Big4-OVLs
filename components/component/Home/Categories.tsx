@@ -7,11 +7,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const rows = [
-  ["Kitchens", "Furniture", "Appliances", "Closets", "Bathrooms"],
+  ["Tiles", "Sanitary", "Bathrooms", "Interior work"],
 
-  ["Countertops", "Surfaces", "Decoration", "Art", "Lighting"],
+  ["Kitchen", "Fittings", "Closets","Gum"],
 
-  ["Carpets", "Wall", "Outdoor"],
+  ["Pipes"],
 ];
 
 export default function Categories() {
@@ -70,14 +70,14 @@ export default function Categories() {
                     group
                     relative
                     overflow-hidden
-
+                    cursor-pointer
                     h-10
                     lg:h-11
 
                     rounded-full
 
                     border
-                    border-[#595959]
+                    border-[#939393]
 
                     bg-transparent
 
@@ -86,7 +86,7 @@ export default function Categories() {
 
                     uppercase
 
-                    text-[11px]
+                    text-[13px]
                     sm:text-[12px]
                     lg:text-[13px]
 
@@ -125,7 +125,7 @@ export default function Categories() {
                     className="
                       relative
                       z-10
-
+                      font-black
                       transition-colors
                       duration-500
 

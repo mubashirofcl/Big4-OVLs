@@ -134,7 +134,7 @@ export default function Hero() {
     select-none
     font-bold
 
-    text-[10vw]
+    text-[9vw]
     sm:text-[10vw]
     md:text-[10vw]
     lg:text-[8vw]
@@ -151,6 +151,14 @@ export default function Hero() {
           </div>
         </h1>
 
+      </div>
+
+
+      <div className="absolute bottom-8 lg:bottom-14 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+
+        <span className="text-[8px] lg:text-[10px]  uppercase  mix-blend-difference text-white">
+          Scroll Down
+        </span>
       </div>
 
     </section>

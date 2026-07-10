@@ -62,33 +62,21 @@ export default function BrandCard({ title }: BrandCardProps) {
     };
   }, []);
 
+  const textClass =
+    title.length > 22
+      ? "text-[10px] sm:text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]"
+      : title.length > 16
+      ? "text-[12px] sm:text-[16px] md:text-[18px] lg:text-[22px] xl:text-[24px]"
+      : "text-sm sm:text-xl md:text-2xl lg:text-[28px] xl:text-[30px]";
+
   return (
     <div
       ref={cardRef}
-      className="
-        relative flex items-center justify-center
-        w-full
-        aspect-[2.25/1]
-        overflow-hidden
-        border border-[#1d1d1d]
-        bg-[#111111]
-      "
+      className="relative flex items-center justify-center w-full aspect-[2.25/1] overflow-hidden border border-[#1d1d1d] bg-[#111111]"
     >
       <div
         ref={textRef}
-        className="
-    will-change-transform
-    text-white
-    font-semibold
-    uppercase
-    tracking-tight
-
-    text-sm
-    sm:text-xl
-    md:text-2xl
-    lg:text-[28px]
-    xl:text-[30px]
-  "
+        className={`will-change-transform text-white font-semibold uppercase tracking-tight leading-none text-center whitespace-nowrap px-4 ${textClass}`}
       >
         {title}
       </div>
