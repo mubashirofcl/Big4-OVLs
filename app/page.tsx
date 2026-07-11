@@ -2,6 +2,7 @@ import AboutSection from "@/components/component/Home/AboutSection";
 import BrandsSection from "@/components/component/Home/Brands";
 import Categories from "@/components/component/Home/Categories";
 import CatalogSection from "@/components/component/Home/Catlog";
+import SiteFooter from "@/components/component/Home/Footer";
 import Hero from "@/components/component/Home/Hero";
 import InfiniteGallery from "@/components/component/Home/InfiniteGallery";
 import Navbar from "@/components/component/Home/Navbar";
@@ -23,6 +24,7 @@ export default function Home() {
         <BrandsSection />
         <CatalogSection />
         <ShowroomSection />
+        <SiteFooter/>
       </div>
     </>
   );
