@@ -104,34 +104,8 @@ export function ProductFilters({ categories, brands }: ProductFiltersProps) {
   );
 
   return (
-    <>
-      {/* Mobile Filter Button & Sheet */}
-      <div className="lg:hidden mb-4">
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button variant="outline" className="w-full flex items-center justify-center gap-2">
-              <FilterIcon className="w-4 h-4" />
-              Filters
-              {activeFilterCount > 0 && (
-                <Badge variant="secondary" className="ml-2 h-5 w-5 p-0 flex items-center justify-center rounded-full">
-                  {activeFilterCount}
-                </Badge>
-              )}
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-[300px] overflow-y-auto">
-            <SheetHeader className="mb-6">
-              <SheetTitle>Filters</SheetTitle>
-            </SheetHeader>
-            <FilterContent />
-          </SheetContent>
-        </Sheet>
-      </div>
-
-      {/* Desktop Sidebar */}
-      <div className="hidden lg:block w-64 shrink-0 pr-6">
-        <FilterContent />
-      </div>
-    </>
+    <div className="hidden lg:block w-64 shrink-0 pr-6">
+      <FilterContent />
+    </div>
   );
 }

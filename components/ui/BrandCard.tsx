@@ -17,49 +17,48 @@ export default function BrandCard({ title }: BrandCardProps) {
   useEffect(() => {
     if (!cardRef.current || !textRef.current) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: cardRef.current,
-        start: "top 88%",
-        once: true,
-      },
-    });
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: cardRef.current,
+          start: "top 88%",
+          once: true,
+        },
+      });
 
-    gsap.set(cardRef.current, {
-      opacity: 0,
-      y: 70,
-    });
+      gsap.set(cardRef.current, {
+        opacity: 0,
+        y: 70,
+      });
 
-    gsap.set(textRef.current, {
-      opacity: 0,
-      scaleX: 0,
-      clipPath: "inset(0 50% 0 50%)",
-      transformOrigin: "center center",
-      filter: "blur(10px)",
-    });
+      gsap.set(textRef.current, {
+        opacity: 0,
+        scaleX: 0,
+        clipPath: "inset(0 50% 0 50%)",
+        transformOrigin: "center center",
+        filter: "blur(10px)",
+      });
 
-    tl.to(cardRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 0.9,
-      ease: "expo.out",
-    }).to(
-      textRef.current,
-      {
+      tl.to(cardRef.current, {
         opacity: 1,
-        scaleX: 1,
-        clipPath: "inset(0 0% 0 0%)",
-        filter: "blur(0px)",
-        duration: 1,
+        y: 0,
+        duration: 0.9,
         ease: "expo.out",
-      },
-      "-=0.45"
-    );
+      }).to(
+        textRef.current,
+        {
+          opacity: 1,
+          scaleX: 1,
+          clipPath: "inset(0 0% 0 0%)",
+          filter: "blur(0px)",
+          duration: 1,
+          ease: "expo.out",
+        },
+        "-=0.45"
+      );
+    }, cardRef);
 
-    return () => {
-      tl.scrollTrigger?.kill();
-      tl.kill();
-    };
+    return () => ctx.revert();
   }, []);
 
   const textClass =

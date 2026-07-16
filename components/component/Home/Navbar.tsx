@@ -7,13 +7,15 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 type NavbarProps = {
-  menuOpen: boolean;
-  setMenuOpen: (value: boolean) => void;
+  menuOpen?: boolean;
+  setMenuOpen?: (value: boolean) => void;
+  theme?: 'light' | 'dark';
 }
 
 export default function Navbar({
   menuOpen,
-  setMenuOpen
+  setMenuOpen,
+  theme = 'dark'
 }: NavbarProps) {
   const navRef = useRef<HTMLElement>(null);
   const lastScrollY = useRef(0);
@@ -169,12 +171,12 @@ export default function Navbar({
   }, []);
 
   return (
-    <header ref={navRef} className="fixed top-0 left-0 z-50 w-full">
+    <header ref={navRef} className={`fixed top-0 left-0 z-50 w-full ${theme === 'light' ? 'text-black' : 'text-white'}`}>
       <div className="mx-auto flex h-16 sm:h-20 lg:h-24 items-center justify-between px-6 sm:px-6 lg:px-10 xl:px-16 py-12 lg:py-20">
         {/* Logo */}
         <Link href="/" className="nav-logo">
           <Image
-            src="/logo1.png"
+            src={theme === 'light' ? "/logo2.png" : "/logo1.png"}
             alt="Logo"
             width={160}
             height={50}
@@ -199,27 +201,35 @@ export default function Navbar({
             </div>
 
             <div className="nav-link">
+              <NavLink title="Products" href="/products" />
+            </div>
+
+            <div className="nav-link">
               <NavLink title="Contact" href="/contact" />
             </div>
 
             <div className="nav-link">
               <Link
                 href="/catalog"
-                className=" cursor-pointer border border-white bg-white px-3 py-2 sm:px-5 sm:py-2.5 text-[8px] font-semibold uppercase text-black transition-all duration-300 ease-in-out hover:bg-black hover:text-white hover:border-white"
+                className={`inline-flex items-center justify-center cursor-pointer border px-3 py-2 sm:px-5 sm:py-2.5 text-[10px] font-semibold uppercase transition-all duration-300 ease-in-out ${
+                  theme === 'light' 
+                    ? 'border-black bg-black text-white hover:bg-white hover:text-black hover:border-black' 
+                    : 'border-white bg-white text-black hover:bg-black hover:text-white hover:border-white'
+                }`}
               >
                 Catalog
               </Link>
             </div>
           </div>
 
-          <div className="ml-14 flex items-center gap-20">
+          <div className="ml-14 flex items-center">
             <Image
               src="/677276fd561b48d392692df4_burger-icon.svg"
               alt="Menu"
               width={42}
               height={42}
-              className="nav-menu h-10 w-10 xl:h-10 xl:w-10 pb-2 lg:pb-1 cursor-pointer"
-               onClick={() => setMenuOpen(true)}
+              className={`nav-menu h-10 w-10 cursor-pointer ${theme === 'light' ? 'invert' : ''}`}
+               onClick={() => setMenuOpen?.(true)}
             />
           </div>
         </nav>
@@ -229,7 +239,7 @@ export default function Navbar({
           <div className="">
             <Link href="/" className="nav-logo">
               <Image
-                src="/logo1.png"
+                src={theme === 'light' ? "/logo2.png" : "/logo1.png"}
                 alt="Logo"
                 width={160}
                 height={50}
@@ -239,11 +249,15 @@ export default function Navbar({
             </Link>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex items-center gap-4">
             <div className="mobile-btn">
               <Link
                 href="/catalog"
-                className=" cursor-pointer border border-white bg-white px-3 py-2 sm:px-5 sm:py-2.5 text-[8px] font-semibold uppercase text-black transition-all duration-300 ease-in-out hover:bg-black hover:text-white hover:border-black"
+                className={`inline-flex items-center justify-center cursor-pointer border px-3 py-2 sm:px-5 sm:py-2.5 text-[10px] font-semibold uppercase transition-all duration-300 ease-in-out ${
+                  theme === 'light' 
+                    ? 'border-black bg-black text-white hover:bg-white hover:text-black hover:border-black' 
+                    : 'border-white bg-white text-black hover:bg-black hover:text-white hover:border-white'
+                }`}
               >
                 Catalog
               </Link>
@@ -254,8 +268,8 @@ export default function Navbar({
               alt="Menu"
               width={40}
               height={40}
-              className="mobile-menu h-8 w-8 sm:h-10 sm:w-10 cursor-pointer"
-               onClick={() => setMenuOpen(true)}
+              className={`mobile-menu h-8 w-8 sm:h-10 sm:w-10 cursor-pointer ${theme === 'light' ? 'invert' : ''}`}
+               onClick={() => setMenuOpen?.(true)}
             />
           </div>
         </div>

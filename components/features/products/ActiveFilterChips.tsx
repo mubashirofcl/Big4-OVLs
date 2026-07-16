@@ -37,8 +37,8 @@ export function ActiveFilterChips() {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 mb-6">
-      <span className="text-sm text-muted-foreground mr-2">Active filters:</span>
+    <div className="flex overflow-x-auto whitespace-nowrap items-center gap-2 mb-6 pb-2 scrollbar-hide -mx-6 px-6 sm:mx-0 sm:px-0">
+      <span className="text-sm text-muted-foreground mr-2 shrink-0">Active filters:</span>
       
       {searchFilter && (
         <Badge variant="secondary" className="flex items-center gap-1 pl-3 pr-2 py-1 bg-muted/50">

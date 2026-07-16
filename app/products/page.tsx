@@ -5,6 +5,7 @@ import { ProductSearch } from "@/components/features/products/ProductSearch";
 import { SortSelect } from "@/components/features/products/SortSelect";
 import { ActiveFilterChips } from "@/components/features/products/ActiveFilterChips";
 import { ProductPagination } from "@/components/features/products/ProductPagination";
+import { MobileProductControls } from "@/components/features/products/MobileProductControls";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -25,15 +26,16 @@ export const metadata = {
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const page = typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
-  const limit = typeof searchParams.limit === "string" ? Number(searchParams.limit) : 12;
-  const search = typeof searchParams.search === "string" ? searchParams.search : undefined;
-  const category = typeof searchParams.category === "string" ? searchParams.category : undefined;
-  const brand = typeof searchParams.brand === "string" ? searchParams.brand : undefined;
-  const sort = typeof searchParams.sort === "string" ? searchParams.sort : "newest";
-  const inStock = searchParams.inStock === "true";
+  const resolvedSearchParams = await searchParams;
+  const page = typeof resolvedSearchParams.page === "string" ? Number(resolvedSearchParams.page) : 1;
+  const limit = typeof resolvedSearchParams.limit === "string" ? Number(resolvedSearchParams.limit) : 12;
+  const search = typeof resolvedSearchParams.search === "string" ? resolvedSearchParams.search : undefined;
+  const category = typeof resolvedSearchParams.category === "string" ? resolvedSearchParams.category : undefined;
+  const brand = typeof resolvedSearchParams.brand === "string" ? resolvedSearchParams.brand : undefined;
+  const sort = typeof resolvedSearchParams.sort === "string" ? resolvedSearchParams.sort : "newest";
+  const inStock = resolvedSearchParams.inStock === "true";
 
   // Fetch categories and products in parallel
   const [categoriesRes, productsRes] = await Promise.all([
@@ -57,9 +59,9 @@ export default async function ProductsPage({
   const brands = Array.from(new Set(productsRes?.data.map((p) => p.brand).filter(Boolean) as string[]));
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-background pt-28 pb-20">
+    <div className="light-theme bg-background text-foreground min-h-screen">
+      <Navbar theme="light" />
+      <main className="pt-28 pb-20">
         <div className="max-w-[1400px] mx-auto px-6 sm:px-10 xl:px-16">
           <FadeIn>
             {/* Breadcrumbs */}
@@ -88,14 +90,22 @@ export default async function ProductsPage({
                 </p>
               </div>
               
-              <div className="flex flex-col sm:flex-row items-center gap-4">
-                <ProductSearch />
-                <SortSelect />
+              <div className="flex flex-col w-full md:w-auto sm:flex-row items-center gap-4">
+                <div className="w-full sm:w-auto sticky top-[4.5rem] z-40 lg:static bg-background/95 backdrop-blur py-3 -mx-6 px-6 lg:mx-0 lg:px-0 lg:py-0 border-b lg:border-none border-border">
+                  <ProductSearch />
+                </div>
+                <div className="hidden lg:block">
+                  <SortSelect />
+                </div>
               </div>
             </div>
             
+
+            
             <ActiveFilterChips />
           </FadeIn>
+
+          <MobileProductControls categories={categories} brands={brands} />
 
           <div className="flex flex-col lg:flex-row gap-8">
             <ProductFilters categories={categories} brands={brands} />
@@ -120,6 +130,6 @@ export default async function ProductsPage({
         </div>
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }

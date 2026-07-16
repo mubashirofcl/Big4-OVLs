@@ -31,64 +31,67 @@ export default function Hero() {
 
     const distance = window.innerHeight * 0.45;
 
-    gsap.set([line1Ref.current, line2Ref.current], {
-      y: 120,
-      opacity: 0,
-    });
-
-    gsap.to([line1Ref.current, line2Ref.current], {
-      y: 0,
-      opacity: 1,
-      duration: 1.2,
-      ease: "power4.out",
-      stagger: 0.12,
-      delay: 0.7,
-    });
-
-    const playAnimation = () => {
-      if (!imgRef.current || !isMounted) return;
-
-      gsap.set(imgRef.current, {
-        y: distance,
+    const ctx = gsap.context(() => {
+      gsap.set([line1Ref.current, line2Ref.current], {
+        y: 120,
         opacity: 0,
-        rotate: -360,
-        scale: 0.7,
       });
 
-      tl = gsap.timeline({
-        onComplete: () => {
-          if (!isMounted) return;
-
-          current = (current + 1) % images.length;
-          setIndex(current);
-          playAnimation();
-        },
-      });
-
-      tl.to(imgRef.current, {
+      gsap.to([line1Ref.current, line2Ref.current], {
         y: 0,
         opacity: 1,
-        rotate: 0,
-        scale: 1,
-        duration: 1.6,
-        ease: "expo.out",
-      })
-        .to({}, { duration: 0.7 })
-        .to(imgRef.current, {
-          y: -distance,
-          opacity: 0,
-          rotate: 360,
-          scale: 0.8,
-          duration: 1.6,
-          ease: "expo.in",
-        });
-    };
+        duration: 1.2,
+        ease: "power4.out",
+        stagger: 0.12,
+        delay: 0.7,
+      });
 
-    playAnimation();
+      const playAnimation = () => {
+        if (!imgRef.current || !isMounted) return;
+
+        gsap.set(imgRef.current, {
+          y: distance,
+          opacity: 0,
+          rotate: -360,
+          scale: 0.7,
+        });
+
+        tl = gsap.timeline({
+          onComplete: () => {
+            if (!isMounted) return;
+
+            current = (current + 1) % images.length;
+            setIndex(current);
+            playAnimation();
+          },
+        });
+
+        tl.to(imgRef.current, {
+          y: 0,
+          opacity: 1,
+          rotate: 0,
+          scale: 1,
+          duration: 1.6,
+          ease: "expo.out",
+        })
+          .to({}, { duration: 0.7 })
+          .to(imgRef.current, {
+            y: -distance,
+            opacity: 0,
+            rotate: 360,
+            scale: 0.8,
+            duration: 1.6,
+            ease: "expo.in",
+          });
+      };
+
+      playAnimation();
+    });
 
     return () => {
       isMounted = false;
       tl?.kill();
+      ctx.revert();
     };
   }, []);
 

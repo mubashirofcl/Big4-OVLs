@@ -110,7 +110,7 @@ export default function OurBrands() {
       }
     `}</style>
 
-            <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+            <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} theme="light" />
             <FullscreenMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
             <section ref={sectionRef} className="relative w-full">

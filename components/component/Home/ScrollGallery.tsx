@@ -165,7 +165,6 @@ export default function ScrollGallery() {
 
         return () => {
             ctx.revert();
-            ScrollTrigger.getAll().forEach((t) => t.kill());
         };
     }, []);
 

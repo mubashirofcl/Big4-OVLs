@@ -48,135 +48,141 @@ export default function FullscreenMenu({
     useEffect(() => {
         if (!menuRef.current) return;
 
-        if (menuOpen) {
-            document.body.style.overflow = "hidden";
+        const ctx = gsap.context(() => {
+            if (menuOpen) {
+                document.body.style.overflow = "hidden";
 
-            gsap.set(menuRef.current, {
-                display: "block",
-                yPercent: -100,
-            });
+                gsap.set(menuRef.current, {
+                    display: "block",
+                    yPercent: -100,
+                });
 
-            gsap.set(".menu-logo", {
-                opacity: 0,
-                y: 25,
-            });
+                gsap.set(".menu-logo", {
+                    opacity: 0,
+                    y: 25,
+                });
 
-            gsap.set(".menu-close", {
-                opacity: 0,
-                y: 25,
-            });
+                gsap.set(".menu-close", {
+                    opacity: 0,
+                    y: 25,
+                });
 
-            gsap.set(".menu-item", {
-                opacity: 0,
-                y: 80,
-            });
+                gsap.set(".menu-item", {
+                    opacity: 0,
+                    y: 80,
+                });
 
-            gsap.set(".catalog-btn", {
-                opacity: 0,
-                y: 25,
-                scale: .95,
-            });
+                gsap.set(".catalog-btn", {
+                    opacity: 0,
+                    y: 25,
+                    scale: .95,
+                });
 
-            const tl = gsap.timeline();
+                const tl = gsap.timeline();
 
-            tl.to(menuRef.current, {
-                yPercent: 0,
-                duration: .85,
-                ease: "expo.inOut",
-            });
+                tl.to(menuRef.current, {
+                    yPercent: 0,
+                    duration: .85,
+                    ease: "expo.inOut",
+                });
 
-            tl.to(
-                [".menu-logo", ".menu-close"],
-                {
-                    opacity: 1,
-                    y: 0,
-                    duration: .45,
-                    stagger: .05,
-                    ease: "power3.out",
-                },
-                "-=.35"
-            );
+                tl.to(
+                    [".menu-logo", ".menu-close"],
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: .45,
+                        stagger: .05,
+                        ease: "power3.out",
+                    },
+                    "-=.35"
+                );
 
-            tl.to(
-                ".menu-item",
-                {
-                    opacity: 1,
-                    y: 0,
-                    stagger: .08,
-                    duration: .7,
-                    ease: "power4.out",
-                },
-                "-=.15"
-            );
+                tl.to(
+                    ".menu-item",
+                    {
+                        opacity: 1,
+                        y: 0,
+                        stagger: .08,
+                        duration: .7,
+                        ease: "power4.out",
+                    },
+                    "-=.15"
+                );
 
-            // animate letters individually after menu-item animation starts
-            const letters = menuRef.current.querySelectorAll('.letter');
-            if (letters && letters.length) {
-                gsap.fromTo(
-                    letters,
-                    { rotationX: -80, opacity: 0, y: 16 },
-                    { rotationX: 0, opacity: 1, y: 0, stagger: 0.02, duration: 0.6, ease: 'power3.out' },
+                // animate letters individually after menu-item animation starts
+                const letters = menuRef.current!.querySelectorAll('.letter');
+                if (letters && letters.length) {
+                    gsap.fromTo(
+                        letters,
+                        { rotationX: -80, opacity: 0, y: 16 },
+                        { rotationX: 0, opacity: 1, y: 0, stagger: 0.02, duration: 0.6, ease: 'power3.out' },
+                    );
+                }
+
+                tl.to(
+                    ".catalog-btn",
+                    {
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        duration: .45,
+                        ease: "back.out(1.6)",
+                    },
+                    "-=.25"
+                );
+            } else {
+                document.body.style.overflow = "";
+
+                const tl = gsap.timeline();
+
+                tl.to(".catalog-btn", {
+                    opacity: 0,
+                    y: 20,
+                    duration: .2,
+                });
+
+                tl.to(
+                    ".menu-item",
+                    {
+                        opacity: 0,
+                        y: -40,
+                        stagger: .04,
+                        duration: .22,
+                    },
+                    "-=.1"
+                );
+
+                tl.to(
+                    [".menu-logo", ".menu-close"],
+                    {
+                        opacity: 0,
+                        y: -20,
+                        duration: .2,
+                    },
+                    "-=.18"
+                );
+
+                tl.to(
+                    menuRef.current,
+                    {
+                        yPercent: -100,
+                        duration: .75,
+                        ease: "expo.inOut",
+                        onComplete: () => {
+                            if (menuRef.current) {
+                                gsap.set(menuRef.current, {
+                                    display: "none",
+                                });
+                            }
+                        },
+                    },
+                    "-=.08"
                 );
             }
+        }, menuRef);
 
-            tl.to(
-                ".catalog-btn",
-                {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    duration: .45,
-                    ease: "back.out(1.6)",
-                },
-                "-=.25"
-            );
-        } else {
-            document.body.style.overflow = "";
-
-            const tl = gsap.timeline();
-
-            tl.to(".catalog-btn", {
-                opacity: 0,
-                y: 20,
-                duration: .2,
-            });
-
-            tl.to(
-                ".menu-item",
-                {
-                    opacity: 0,
-                    y: -40,
-                    stagger: .04,
-                    duration: .22,
-                },
-                "-=.1"
-            );
-
-            tl.to(
-                [".menu-logo", ".menu-close"],
-                {
-                    opacity: 0,
-                    y: -20,
-                    duration: .2,
-                },
-                "-=.18"
-            );
-
-            tl.to(
-                menuRef.current,
-                {
-                    yPercent: -100,
-                    duration: .75,
-                    ease: "expo.inOut",
-                    onComplete: () => {
-                        gsap.set(menuRef.current, {
-                            display: "none",
-                        });
-                    },
-                },
-                "-=.08"
-            );
-        }
+        return () => ctx.revert();
     }, [menuOpen]);
 
     // premium two-face cube hover effect for the active menu item only
@@ -253,7 +259,7 @@ export default function FullscreenMenu({
 
                     <Link href="/" className="menu-logo">
                         <Image
-                            src="/logo1.png"
+                            src="/logo2.png"
                             alt="Logo"
                             width={160}
                             height={50}
@@ -272,11 +278,9 @@ export default function FullscreenMenu({
 
                 </header>
 
-                {/* CENTER */}
-
-                <div className="flex-1 flex flex-col items-center justify-center text-black font-black  ">
-
-                    <div className="flex flex-col items-center ">
+                <div className="flex-1 flex flex-col items-center justify-center w-full">
+                    <div className="flex flex-col items-center justify-center w-full py-4 text-black font-black">
+                        <div className="flex flex-col items-center">
 
                         {/* HOME */}
                         <Link href="/" onClick={() => setMenuOpen(false)} className="menu-item overflow-hidden cursor-pointer" onMouseEnter={handleItemEnter} onMouseLeave={handleItemLeave}>
@@ -299,6 +303,13 @@ export default function FullscreenMenu({
                             </div>
                         </Link>
 
+                        {/* PRODUCTS */}
+                        <Link href="/products" onClick={() => setMenuOpen(false)} className="menu-item overflow-hidden cursor-pointer" onMouseEnter={handleItemEnter} onMouseLeave={handleItemLeave}>
+                            <div className="menu-cube relative inline-flex w-fit items-center justify-center overflow-hidden leading-none whitespace-nowrap">
+                                {renderDualLayerText("PRODUCTS")}
+                            </div>
+                        </Link>
+
                         {/* CONTACT */}
                         <Link href="/contact" onClick={() => setMenuOpen(false)} className="menu-item overflow-hidden cursor-pointer" onMouseEnter={handleItemEnter} onMouseLeave={handleItemLeave}>
                             <div className="menu-cube relative inline-flex w-fit items-center justify-center overflow-hidden leading-none whitespace-nowrap">
@@ -310,6 +321,7 @@ export default function FullscreenMenu({
 
                     <button
                         className="
+            catalog-btn
             mt-12
             px-10
             py-3
@@ -331,6 +343,7 @@ export default function FullscreenMenu({
                         <span data-text="CATALOG">CATALOG</span>
                     </button>
 
+                    </div>
                 </div>
 
             </div>

@@ -1,5 +1,6 @@
 import { getProducts } from "@/lib/api";
 import { ProductGrid } from "./ProductGrid";
+import { ProductCard } from "./ProductCard";
 
 interface RelatedProductsProps {
   categorySlug: string;
@@ -20,7 +21,20 @@ export async function RelatedProducts({ categorySlug, currentProductId }: Relate
     return (
       <section className="mt-24 pt-12 border-t border-border">
         <h2 className="text-3xl font-heading font-semibold mb-8">Related Products</h2>
-        <ProductGrid products={relatedProducts} />
+        
+        {/* Desktop Grid */}
+        <div className="hidden lg:block">
+          <ProductGrid products={relatedProducts} />
+        </div>
+        
+        {/* Mobile Horizontal Scroll */}
+        <div className="lg:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-6 px-6 scrollbar-hide">
+          {relatedProducts.map((product) => (
+            <div key={product.id} className="w-[85vw] sm:w-[300px] shrink-0 snap-start">
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
       </section>
     );
   } catch (error) {

@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={cn(inter.variable, "dark")}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
