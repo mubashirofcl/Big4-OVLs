@@ -1,96 +1,71 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
-
-const CIRCLE_SIZE = 66;
-const TOP_OFFSET = 48; // top-12 = 48px
-const BOTTOM_OFFSET = 2; // bottom-14 = 56px
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const images = [
-  { src: "/77.webp", top: 180, left: 45, width: 160, height: 115 },
-  { src: "/78.webp", top: 310, right: 40, width: 160, height: 105 },
-  { src: "/79.webp", top: 500, left: 45, width: 160, height: 115 },
-  { src: "/80.webp", top: 640, right: 40, width: 160, height: 180 },
-  { src: "/81.jpg", top: 860, left: 120, width: 160, height: 105 },
+  { src: "/77.webp", ratio: 170 / 125, align: "start" as const },
+  { src: "/78.webp", ratio: 190 / 120, align: "end" as const },
+  { src: "/79.webp", ratio: 170 / 125, align: "start" as const },
+  { src: "/80.webp", ratio: 190 / 215, align: "end" as const },
+  { src: "/81.jpg", ratio: 170 / 115, align: "start" as const },
 ];
 
-// Every value multiplies by the --s custom property.
-// On mobile --s is 1, so this resolves to the exact original px value.
-const s = (value: number) => `calc(${value}px * var(--s, 1))`;
+function RevealImage({ src, ratio }: { src: string; ratio: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Tracks the ENTIRE time the image is in the viewport — not just its entrance.
+  // This is what makes the motion continuous instead of a one-shot reveal.
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  // Growth: only the first slice of scroll (0 -> 0.35) grows the mask open.
+  // Runs in reverse too if you scroll back up.
+  const clipBottom = useTransform(scrollYProgress, [0, 0.35], [100, 0]);
+  const clipPath = useTransform(clipBottom, (v) => `inset(0% 0% ${Math.max(v, 0)}% 0%)`);
+
+  // Parallax: the photo itself keeps drifting for the WHOLE time it's on screen —
+  // this is the persistent "something is happening while I scroll" motion.
+  const y = useTransform(scrollYProgress, [0, 1], ["-12%", "12%"]);
+
+  return (
+    <div ref={ref} className="relative w-full overflow-hidden" style={{ aspectRatio: ratio }}>
+      <motion.div style={{ clipPath }} className="absolute inset-0">
+        <motion.div style={{ y }} className="absolute inset-0 h-[124%] -top-[12%]">
+          <Image src={src} alt="" fill sizes="(max-width: 1023px) 60vw, 484px" className="object-cover" />
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
 
 export default function TimelineGallery() {
   return (
-    <section className="flex justify-center py-8">
-      <div
-        className="relative overflow-hidden [--s:1] sm:[--s:1.15] md:[--s:1.35] lg:[--s:1.6] xl:[--s:1.85]"
-        style={{
-          width: s(450),
-          height: s(1100),
-        }}
-      >
-        {/* ---------- TOP CIRCLE ---------- */}
+    <section className="flex justify-center py-16 md:py-24">
+      <div className="relative w-full max-w-[1100px] px-6">
+        <div className="absolute left-1/2 top-[33px] bottom-[33px] z-0 w-px -translate-x-1/2 bg-[#4b4b4b]" />
 
-        <div
-          className="absolute left-1/2 z-20 -translate-x-1/2 rounded-full border border-[#5d5d5d]"
-          style={{
-            top: s(TOP_OFFSET),
-            width: s(CIRCLE_SIZE),
-            height: s(CIRCLE_SIZE),
-          }}
-        />
+        {/* Solid fallback color — works even if --page-bg is never defined */}
+        <div className="absolute left-1/2 top-0 z-20 h-[66px] w-[66px] -translate-x-1/2 rounded-full border border-[#5d5d5d] bg-[color:var(--page-bg,#0a0a0a)]" />
 
-        {/* ---------- CENTER LINE ---------- */}
+        <div className="relative z-10 flex flex-col gap-16 pt-36 pb-36 md:gap-24 md:pt-44 md:pb-44 lg:gap-32">
+          {images.map((img, i) => (
+            <div
+              key={i}
+              className={
+                "w-[62%] sm:w-[55%] md:w-[48%] lg:w-[44%] " +
+                (img.align === "start" ? "self-start" : "self-end")
+              }
+            >
+              <RevealImage src={img.src} ratio={img.ratio} />
+            </div>
+          ))}
+        </div>
 
-        <div
-          className="absolute left-1/2 w-px -translate-x-1/2 bg-[#4b4b4b]"
-          style={{
-            top: s(TOP_OFFSET + CIRCLE_SIZE),
-            bottom: s(BOTTOM_OFFSET + CIRCLE_SIZE),
-          }}
-        />
-
-        {/* ---------- BOTTOM CIRCLE ---------- */}
-
-        <div
-          className="absolute left-1/2 z-20 -translate-x-1/2 rounded-full border border-[#5d5d5d]"
-          style={{
-            bottom: s(BOTTOM_OFFSET),
-            width: s(CIRCLE_SIZE),
-            height: s(CIRCLE_SIZE),
-          }}
-        />
-
-        {/* ---------- LINE BELOW BOTTOM CIRCLE ---------- */}
-
-        <div
-          className="absolute bottom-0 left-1/2 w-px -translate-x-1/2 bg-[#4b4b4b]"
-          style={{ height: s(BOTTOM_OFFSET) }}
-        />
-
-        {/* ---------- IMAGES ---------- */}
-
-        {images.map((img, index) => (
-          <div
-            key={index}
-            className="absolute overflow-hidden"
-            style={{
-              top: s(img.top),
-              left: img.left !== undefined ? s(img.left) : undefined,
-              right: img.right !== undefined ? s(img.right) : undefined,
-              width: s(img.width),
-              height: s(img.height),
-            }}
-          >
-            <Image
-              src={img.src}
-              alt=""
-              fill
-              priority
-              sizes="(max-width: 767px) 160px, (max-width: 1023px) 216px, (max-width: 1279px) 256px, 296px"
-              className="object-cover"
-            />
-          </div>
-        ))}
+        <div className="absolute bottom-0 left-1/2 z-20 h-[66px] w-[66px] -translate-x-1/2 rounded-full border border-[#5d5d5d] bg-[color:var(--page-bg,#0a0a0a)]" />
       </div>
     </section>
   );

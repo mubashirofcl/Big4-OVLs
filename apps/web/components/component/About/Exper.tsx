@@ -1,4 +1,13 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const sections = [
   {
@@ -19,9 +28,91 @@ const sections = [
 ];
 
 export default function Exper() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    if (!heroRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const headings = heroRef.current?.querySelectorAll("h1") || [];
+      const paragraphs = heroRef.current?.querySelectorAll("p") || [];
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      });
+
+      tl.from(headings, {
+        opacity: 0,
+        y: 40,
+        duration: 0.9,
+        ease: "power3.out",
+        stagger: 0.05,
+      })
+        .from(
+          paragraphs,
+          {
+            opacity: 0,
+            y: 24,
+            duration: 0.8,
+            ease: "power3.out",
+            stagger: 0.05,
+          },
+          "+=0.18"
+        );
+
+      sectionRefs.current.forEach((section, index) => {
+        if (!section) return;
+
+        const content = section.querySelector(".section-content");
+        const media = section.querySelector(".section-media");
+
+        const tlSection = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top 85%",
+            once: true,
+            toggleActions: "play none none none",
+          },
+        });
+
+        tlSection
+          .fromTo(
+            content,
+            { opacity: 0, y: 40 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power3.out",
+              delay: index * 0.08,
+            }
+          )
+          .fromTo(
+            media,
+            { opacity: 0, y: 60, scale: 0.96 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 1,
+              ease: "power3.out",
+            },
+            "-=" + 0.35
+          );
+      });
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <>
-      <div>
+      <div ref={heroRef}>
         {/* mobile hero */}
         <div className="flex flex-col justify-center items-center text-center gap-4 py-20 md:hidden">
           <h1 className="text-3xl font-black uppercase">
@@ -50,11 +141,14 @@ export default function Exper() {
             return (
               <div
                 key={section.title}
+                ref={(el) => {
+                  sectionRefs.current[index] = el;
+                }}
                 className={`px-6 md:px-0 flex flex-col md:items-center md:gap-20 lg:gap-28 xl:gap-40 ${
                   imageLeft ? "md:flex-row-reverse" : "md:flex-row"
                 }`}
               >
-                <div className="md:w-1/2">
+                <div className="section-content md:w-1/2">
                   <h1 className="text-3xl md:text-4xl lg:text-5xl font-black">
                     {section.title}
                   </h1>
@@ -63,7 +157,7 @@ export default function Exper() {
                   </p>
                 </div>
 
-                <div className="relative mt-6 md:mt-0 md:w-1/2 h-[250px] md:h-[440px] lg:h-[540px] xl:h-[600px] w-full overflow-hidden">
+                <div className="section-media relative mt-6 md:mt-0 md:w-1/2 h-62.5 md:h-110 lg:h-135 xl:h-150 w-full overflow-hidden">
                   <Image
                     src={section.src}
                     alt={section.title}

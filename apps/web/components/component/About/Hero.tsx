@@ -17,13 +17,16 @@ export default function Hero() {
     if (!containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      // ---------- Load-in animation: heading rises up into place ----------
-      gsap.from(headingRef.current, {
+      const lines = headingRef.current?.querySelectorAll("span") || [];
+
+      // ---------- Load-in animation: heading lines fade in one by one ----------
+      gsap.from(lines, {
         y: 120,
         opacity: 0,
-        duration: 1.3,
+        duration: 1.1,
         ease: "power4.out",
-        delay: 1.0,
+        stagger: 0.18,
+        delay: 1.3,
       });
 
       gsap.from(scrollHintRef.current, {
@@ -58,9 +61,9 @@ export default function Hero() {
       className="h-screen w-screen flex justify-center items-center text-center overflow-hidden"
     >
       <div className="">
-        <h1 ref={headingRef} className="text-3xl lg:text-8xl font-black">
-          CRAFTING <br />
-          SPACES
+        <h1 ref={headingRef} className="text-3xl lg:text-8xl font-black leading-none">
+          <span className="block">CRAFTING</span>
+          <span className="block">SPACES</span>
         </h1>
       </div>
 
