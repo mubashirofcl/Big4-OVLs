@@ -14,14 +14,14 @@ interface LoadingButtonProps {
 
 const VARIANT_STYLES = {
     primary: {
-        background: "var(--brand-600)",
-        color: "white",
+        background: "var(--hero-bg)",
+        color: "var(--hero-text)",
         border: "none",
     },
     secondary: {
-        background: "var(--bg-primary)",
+        background: "var(--bg-card)",
         color: "var(--text-primary)",
-        border: "1px solid var(--border-color)",
+        border: "1px solid var(--border-default)",
     },
     danger: {
         background: "var(--danger)",

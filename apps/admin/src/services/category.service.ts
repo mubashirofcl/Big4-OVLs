@@ -1,7 +1,9 @@
 import { categoryRepository } from "@/repositories/category.repository";
 import { generateUniqueSlug } from "@/lib/slugify";
 import type { CreateCategoryInput, UpdateCategoryInput } from "@/validations/category.validation";
-import type { ActionResult } from "@/types/admin.types";
+import type { ActionResult, CategoryListParams, PaginatedResult } from "@/types/admin.types";
+
+const DEFAULT_PAGE_SIZE = 6;
 
 /**
  * Category service — business logic for category management.
@@ -12,6 +14,28 @@ export const categoryService = {
      */
     async getAll() {
         return categoryRepository.findAll();
+    },
+
+    /**
+     * Get paginated categories.
+     */
+    async list(params: CategoryListParams) {
+        const page = Math.max(1, params.page ?? 1);
+        const pageSize = Math.min(50, Math.max(1, params.pageSize ?? DEFAULT_PAGE_SIZE));
+        const skip = (page - 1) * pageSize;
+
+        const [items, total] = await Promise.all([
+            categoryRepository.findPaginated(skip, pageSize),
+            categoryRepository.count(),
+        ]);
+
+        return {
+            items,
+            total,
+            page,
+            pageSize,
+            totalPages: Math.ceil(total / pageSize),
+        };
     },
 
     /**

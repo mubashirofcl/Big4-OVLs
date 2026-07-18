@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ProductTable } from "@/components/products/ProductTable";
 import { StockModal } from "@/components/products/StockModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -12,28 +13,51 @@ interface ProductListClientProps {
     products: ProductListItem[];
 }
 
-/**
- * Client wrapper for the product list page.
- * Manages the stock modal and delete confirmation state.
- */
+const TABS = [
+    { label: "All", value: "all" },
+    { label: "Active", value: "active" },
+    { label: "Archived", value: "archived" },
+    { label: "Low Stock", value: "low-stock" }
+];
+
 export function ProductListClient({ products }: ProductListClientProps) {
     const { toast } = useToast();
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    
+    // Determine current tab from URL
+    let currentTab = "all";
+    if (searchParams.get("status") === "active") currentTab = "active";
+    if (searchParams.get("status") === "archived") currentTab = "archived";
+    if (searchParams.get("sort") === "stock-asc") currentTab = "low-stock";
+
     const [stockProduct, setStockProduct] = useState<ProductListItem | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<ProductListItem | null>(null);
     const [deleting, setDeleting] = useState(false);
+
+    const handleTabChange = (value: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("status");
+        params.delete("sort");
+        
+        if (value === "active") params.set("status", "active");
+        if (value === "archived") params.set("status", "archived");
+        if (value === "low-stock") params.set("sort", "stock-asc");
+        
+        router.push(`?${params.toString()}`);
+    };
 
     const handleDelete = async () => {
         if (!deleteTarget) return;
         setDeleting(true);
 
-        // Permanently delete from database
         const result = await deleteProductAction(deleteTarget.id);
         setDeleting(false);
 
         if (result.success) {
             toast("Product deleted permanently", "success");
             setDeleteTarget(null);
-            window.location.reload();
+            router.refresh(); // Use router.refresh() instead of window.location.reload()
         } else {
             toast(result.message, "error");
             setDeleteTarget(null);
@@ -42,19 +66,44 @@ export function ProductListClient({ products }: ProductListClientProps) {
 
     return (
         <>
+            {/* Segmented Control */}
+            <div style={{ display: "flex", overflowX: "auto", gap: 8, marginBottom: 24, paddingBottom: 4, msOverflowStyle: "none", scrollbarWidth: "none" }} className="segmented-control">
+                {TABS.map(tab => {
+                    const isActive = currentTab === tab.value;
+                    return (
+                        <button
+                            key={tab.value}
+                            onClick={() => handleTabChange(tab.value)}
+                            style={{
+                                padding: "8px 16px",
+                                borderRadius: "var(--radius-pill)",
+                                border: "none",
+                                background: isActive ? "var(--hero-bg)" : "transparent",
+                                color: isActive ? "var(--hero-text)" : "var(--text-secondary)",
+                                fontSize: 14,
+                                fontWeight: isActive ? 600 : 500,
+                                cursor: "pointer",
+                                whiteSpace: "nowrap",
+                                transition: "all 200ms ease"
+                            }}
+                        >
+                            {tab.label}
+                        </button>
+                    );
+                })}
+            </div>
+
             <ProductTable
                 products={products}
                 onStockClick={(product) => setStockProduct(product)}
                 onDeleteClick={(product) => setDeleteTarget(product)}
             />
 
-            {/* Stock Modal */}
             <StockModal
                 product={stockProduct}
                 onClose={() => setStockProduct(null)}
             />
 
-            {/* Delete Confirmation */}
             <ConfirmDialog
                 open={!!deleteTarget}
                 title="Delete Product"

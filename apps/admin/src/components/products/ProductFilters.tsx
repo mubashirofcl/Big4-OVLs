@@ -36,10 +36,10 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
     const selectStyle: React.CSSProperties = {
         padding: "8px 12px",
         fontSize: 13,
-        border: "1px solid #e5e7eb",
+        border: "1px solid var(--border-default)",
         borderRadius: 8,
-        background: "#ffffff",
-        color: "#374151",
+        background: "var(--bg-input)",
+        color: "var(--text-primary)",
         outline: "none",
         cursor: "pointer",
         minWidth: 140,

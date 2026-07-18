@@ -23,10 +23,10 @@ export default async function NewProductPage() {
     return (
         <div>
             <div style={{ marginBottom: 24 }}>
-                <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0, color: "#111827" }}>
-                    Add Product
+                <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0, color: "var(--text-primary)" }}>
+                    Add New Product
                 </h1>
-                <p style={{ fontSize: 14, color: "#6b7280", margin: "4px 0 0" }}>
+                <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: "4px 0 0" }}>
                     Create a new product in your inventory
                 </p>
             </div>

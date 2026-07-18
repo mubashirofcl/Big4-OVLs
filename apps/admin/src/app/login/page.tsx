@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { LoadingButton } from "@/components/ui/LoadingButton";
+import { loginSchema } from "@/validations/auth.validation";
 
 /**
  * /login — Admin login page.
@@ -14,12 +15,26 @@ export default function LoginPage() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errors, setErrors] = useState<Record<string, string[]>>({});
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError("");
+        setErrors({});
+        
+        const parsed = loginSchema.safeParse({ email, password });
+        if (!parsed.success) {
+            setErrors(parsed.error.flatten().fieldErrors as Record<string, string[]>);
+            if (parsed.error.flatten().fieldErrors.email) {
+                document.getElementById("email")?.focus();
+            } else if (parsed.error.flatten().fieldErrors.password) {
+                document.getElementById("password")?.focus();
+            }
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -30,7 +45,7 @@ export default function LoginPage() {
                     Origin: window.location.origin,
                 },
                 credentials: "include",
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email: parsed.data.email, password: parsed.data.password }),
             });
 
             const data = await res.json();
@@ -56,7 +71,7 @@ export default function LoginPage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "var(--bg-secondary)",
+                background: "var(--bg-canvas)",
                 padding: 16,
             }}
         >
@@ -64,31 +79,39 @@ export default function LoginPage() {
                 style={{
                     width: "100%",
                     maxWidth: 400,
-                    background: "var(--bg-primary)",
+                    background: "var(--bg-card)",
+                    border: "1px solid var(--border-default)",
                     borderRadius: "var(--radius-xl)",
-                    boxShadow: "var(--shadow-lg)",
+                    boxShadow: "var(--shadow-drawer)",
                     padding: 32,
                 }}
             >
                 {/* Branding */}
                 <div style={{ textAlign: "center", marginBottom: 32 }}>
-                    <div
+                    <img
+                        src="/logo2.png"
+                        alt="Big4 Logo"
+                        className="light-logo"
                         style={{
-                            width: 52,
-                            height: 52,
-                            borderRadius: "var(--radius-lg)",
-                            background: "linear-gradient(135deg, var(--brand-500), var(--brand-700))",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: "white",
-                            fontWeight: 800,
-                            fontSize: 20,
-                            marginBottom: 16,
+                            width: 140,
+                            height: "auto",
+                            objectFit: "contain",
+                            display: "block",
+                            margin: "0 auto 16px auto",
                         }}
-                    >
-                        B4
-                    </div>
+                    />
+                    <img
+                        src="/logo3.png"
+                        alt="Big4 Logo"
+                        className="dark-logo"
+                        style={{
+                            width: 120,
+                            height: "auto",
+                            objectFit: "contain",
+                            display: "block",
+                            margin: "0 auto 16px auto",
+                        }}
+                    />
                     <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "var(--text-primary)" }}>
                         Welcome back
                     </h1>
@@ -102,10 +125,10 @@ export default function LoginPage() {
                     <div
                         style={{
                             padding: "10px 14px",
-                            background: "#fef2f2",
-                            border: "1px solid #fecaca",
+                            background: "var(--danger-soft)",
+                            border: "1px solid var(--danger)",
                             borderRadius: "var(--radius-md)",
-                            color: "#991b1b",
+                            color: "var(--danger)",
                             fontSize: 13,
                             marginBottom: 20,
                         }}
@@ -139,15 +162,18 @@ export default function LoginPage() {
                             style={{
                                 width: "100%",
                                 padding: "10px 14px",
-                                border: "1px solid var(--border-color)",
+                                border: `1px solid ${errors.email ? "var(--danger)" : "var(--border-default)"}`,
                                 borderRadius: "var(--radius-md)",
                                 fontSize: 14,
                                 outline: "none",
                                 transition: "var(--transition-fast)",
-                                background: "var(--bg-primary)",
+                                background: "var(--bg-input)",
                                 color: "var(--text-primary)",
                             }}
+                            aria-invalid={!!errors.email}
+                            aria-describedby={errors.email ? "email-error" : undefined}
                         />
+                        {errors.email && <span id="email-error" style={{ display: "block", marginTop: 4, fontSize: 13, color: "var(--danger)" }}>{errors.email[0]}</span>}
                     </div>
 
                     <div style={{ marginBottom: 24 }}>
@@ -173,15 +199,18 @@ export default function LoginPage() {
                             style={{
                                 width: "100%",
                                 padding: "10px 14px",
-                                border: "1px solid var(--border-color)",
+                                border: `1px solid ${errors.password ? "var(--danger)" : "var(--border-default)"}`,
                                 borderRadius: "var(--radius-md)",
                                 fontSize: 14,
                                 outline: "none",
                                 transition: "var(--transition-fast)",
-                                background: "var(--bg-primary)",
+                                background: "var(--bg-input)",
                                 color: "var(--text-primary)",
                             }}
+                            aria-invalid={!!errors.password}
+                            aria-describedby={errors.password ? "password-error" : undefined}
                         />
+                        {errors.password && <span id="password-error" style={{ display: "block", marginTop: 4, fontSize: 13, color: "var(--danger)" }}>{errors.password[0]}</span>}
                     </div>
 
                     <LoadingButton

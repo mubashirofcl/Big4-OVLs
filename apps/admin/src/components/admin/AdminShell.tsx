@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Sidebar } from "@/components/admin/Sidebar";
 import { Header } from "@/components/admin/Header";
+import { BottomNav } from "@/components/admin/BottomNav";
 
 interface AdminShellProps {
     children: React.ReactNode;
@@ -26,40 +27,37 @@ export function AdminShell({ children, userEmail, userName }: AdminShellProps) {
     }, []);
 
     return (
-        <div style={{ display: "flex", minHeight: "100vh" }}>
-            <Sidebar
-                open={sidebarOpen}
-                onClose={() => setSidebarOpen(false)}
-                isMobile={isMobile}
+        <div style={{ display: "flex", height: "100vh", overflow: "hidden", flexDirection: "column" }}>
+            <Header
+                userEmail={userEmail}
+                userName={userName}
+                showMenuButton={false}
             />
 
-            <div
-                style={{
-                    flex: 1,
-                    marginLeft: isMobile ? 0 : 260,
-                    display: "flex",
-                    flexDirection: "column",
-                    minHeight: "100vh",
-                    transition: "margin-left 250ms ease",
-                }}
-            >
-                <Header
-                    userEmail={userEmail}
-                    userName={userName}
-                    onMenuClick={() => setSidebarOpen(true)}
-                    showMenuButton={isMobile}
-                />
+            <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+                {!isMobile && (
+                    <Sidebar
+                        open={true}
+                        onClose={() => {}}
+                        isMobile={false}
+                    />
+                )}
 
-                <main
-                    style={{
-                        flex: 1,
-                        padding: isMobile ? 16 : 24,
-                        maxWidth: 1400,
-                        width: "100%",
-                    }}
-                >
-                    {children}
-                </main>
+                <div className="admin-main-content">
+                    <main
+                        style={{
+                            flex: 1,
+                            padding: isMobile ? "16px 16px calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 16px)" : 24,
+                            maxWidth: 1400,
+                            width: "100%",
+                            margin: "0 auto",
+                        }}
+                    >
+                        {children}
+                    </main>
+
+                    {isMobile && <BottomNav userEmail={userEmail} userName={userName} />}
+                </div>
             </div>
         </div>
     );

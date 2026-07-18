@@ -4,7 +4,7 @@ import type { ProductListParams, PaginatedResult, ProductListItem } from "@/type
 import type { CreateProductInput, UpdateProductInput } from "@/validations/product.validation";
 import type { Prisma } from "@prisma/client";
 
-const DEFAULT_PAGE_SIZE = 12;
+const DEFAULT_PAGE_SIZE = 6;
 
 /**
  * Product service — business logic for product management.

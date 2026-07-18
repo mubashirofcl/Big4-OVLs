@@ -28,7 +28,7 @@ export class ProductService {
     const limit = Number(filters.limit) || 12;
     const skip = (page - 1) * limit;
 
-    const where: Prisma.ProductWhereInput = {};
+    const where: Prisma.ProductWhereInput = { isActive: true };
 
     if (filters.category) {
       where.category = { slug: filters.category };

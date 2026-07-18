@@ -6,7 +6,7 @@ import type { Prisma } from "@prisma/client";
  */
 export const brandRepository = {
     /**
-     * Get all brands, ordered by name.
+     * Get all brands, ordered by name (legacy for components not yet paginated).
      */
     async findAll() {
         return prisma.brand.findMany({
@@ -22,6 +22,34 @@ export const brandRepository = {
                 },
             },
         });
+    },
+
+    /**
+     * Get paginated brands.
+     */
+    async findPaginated(skip: number, take: number) {
+        return prisma.brand.findMany({
+            orderBy: { name: "asc" },
+            skip,
+            take,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                createdAt: true,
+                updatedAt: true,
+                _count: {
+                    select: { products: true },
+                },
+            },
+        });
+    },
+
+    /**
+     * Get total count of brands.
+     */
+    async count() {
+        return prisma.brand.count();
     },
 
     /**

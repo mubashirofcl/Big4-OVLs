@@ -1,7 +1,9 @@
 import { brandRepository } from "@/repositories/brand.repository";
 import { generateUniqueSlug } from "@/lib/slugify";
 import type { CreateBrandInput, UpdateBrandInput } from "@/validations/brand.validation";
-import type { ActionResult } from "@/types/admin.types";
+import type { ActionResult, BrandListParams, PaginatedResult } from "@/types/admin.types";
+
+const DEFAULT_PAGE_SIZE = 6;
 
 /**
  * Brand service — business logic for brand management.
@@ -12,6 +14,28 @@ export const brandService = {
      */
     async getAll() {
         return brandRepository.findAll();
+    },
+
+    /**
+     * Get paginated brands.
+     */
+    async list(params: BrandListParams) {
+        const page = Math.max(1, params.page ?? 1);
+        const pageSize = Math.min(50, Math.max(1, params.pageSize ?? DEFAULT_PAGE_SIZE));
+        const skip = (page - 1) * pageSize;
+
+        const [items, total] = await Promise.all([
+            brandRepository.findPaginated(skip, pageSize),
+            brandRepository.count(),
+        ]);
+
+        return {
+            items,
+            total,
+            page,
+            pageSize,
+            totalPages: Math.ceil(total / pageSize),
+        };
     },
 
     /**

@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ThemeSelector } from "@/components/ThemeSelector";
 
 interface HeaderProps {
     userEmail: string;
@@ -11,24 +11,6 @@ interface HeaderProps {
 }
 
 export function Header({ userEmail, userName, onMenuClick, showMenuButton }: HeaderProps) {
-    const router = useRouter();
-    const [loggingOut, setLoggingOut] = useState(false);
-
-    const handleLogout = async () => {
-        setLoggingOut(true);
-        try {
-            await fetch("/api/auth/logout", {
-                method: "POST",
-                headers: { Origin: window.location.origin },
-                credentials: "include",
-            });
-            router.push("/login");
-            router.refresh();
-        } catch {
-            setLoggingOut(false);
-        }
-    };
-
     const initials = userName
         .split(" ")
         .map((n) => n[0])
@@ -37,19 +19,15 @@ export function Header({ userEmail, userName, onMenuClick, showMenuButton }: Hea
         .slice(0, 2);
 
     return (
-        <header
+        <header className="admin-header"
             style={{
-                height: "var(--header-height)",
-                background: "var(--bg-primary)",
-                borderBottom: "1px solid var(--border-color)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                padding: "0 24px",
                 gap: 16,
             }}
         >
-            {/* Hamburger — visible only on mobile */}
+            {/* Left Side: Mobile Logo */}
             {showMenuButton ? (
                 <button
                     onClick={onMenuClick}
@@ -70,59 +48,58 @@ export function Header({ userEmail, userName, onMenuClick, showMenuButton }: Hea
                     </svg>
                 </button>
             ) : (
-                <div />
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <img
+                        src="/logo2.png"
+                        alt="Big4 Logo"
+                        className="light-logo"
+                        style={{ height: 32, objectFit: "contain" }}
+                    />
+                    <img
+                        src="/logo3.png"
+                        alt="Big4 Logo"
+                        className="dark-logo"
+                        style={{ height: 26, objectFit: "contain" }}
+                    />
+                </div>
             )}
 
             {/* Spacer */}
             <div style={{ flex: 1 }} />
 
-            {/* User Info */}
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>
-                        {userName}
-                    </div>
-                    <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>
-                        {userEmail}
+            {/* User Info & Actions */}
+            <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+                {/* User Info */}
+                <div className="hide-on-mobile" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ textAlign: "right", display: "flex", flexDirection: "column" }}>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
+                            {userName}
+                        </div>
+                        <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 2 }}>
+                            {userEmail}
+                        </div>
                     </div>
                 </div>
-                <div
-                    style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: "50%",
-                        background: "linear-gradient(135deg, var(--brand-500), var(--brand-700))",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: "white",
-                        fontSize: 13,
-                        fontWeight: 700,
-                    }}
-                >
-                    {initials}
+                
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                    <div className="hide-on-mobile">
+                        <ThemeSelector />
+                    </div>
+                    
+                    <img
+                        src="/logo1.png"
+                        alt="Admin Logo"
+                        style={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                            border: "1px solid var(--border-default)",
+                        }}
+                    />
+
                 </div>
             </div>
-
-            {/* Logout */}
-            <button
-                onClick={handleLogout}
-                disabled={loggingOut}
-                style={{
-                    padding: "8px 16px",
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: "var(--danger)",
-                    background: "transparent",
-                    border: "1px solid var(--border-color)",
-                    borderRadius: "var(--radius-md)",
-                    cursor: loggingOut ? "not-allowed" : "pointer",
-                    opacity: loggingOut ? 0.6 : 1,
-                    transition: "var(--transition-fast)",
-                }}
-            >
-                {loggingOut ? "Logging out…" : "Logout"}
-            </button>
         </header>
     );
 }

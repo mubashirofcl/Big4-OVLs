@@ -75,10 +75,10 @@ export default async function ProductsPage({ searchParams }: PageProps) {
                 }}
             >
                 <div>
-                    <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0, color: "#111827" }}>
+                    <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0, color: "var(--text-primary)" }}>
                         Products
                     </h1>
-                    <p style={{ fontSize: 14, color: "#6b7280", margin: "4px 0 0" }}>
+                    <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: "4px 0 0" }}>
                         Manage your product inventory
                     </p>
                 </div>
@@ -89,9 +89,9 @@ export default async function ProductsPage({ searchParams }: PageProps) {
                         alignItems: "center",
                         gap: 6,
                         padding: "10px 20px",
-                        background: "#2563eb",
-                        color: "#ffffff",
-                        borderRadius: 8,
+                        background: "var(--hero-bg)",
+                        color: "var(--hero-text)",
+                        borderRadius: "var(--radius-pill)",
                         textDecoration: "none",
                         fontSize: 14,
                         fontWeight: 600,

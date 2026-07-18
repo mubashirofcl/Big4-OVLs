@@ -6,7 +6,7 @@ import type { Prisma } from "@prisma/client";
  */
 export const categoryRepository = {
     /**
-     * Get all categories, ordered by name.
+     * Get all categories, ordered by name (legacy for components not yet paginated).
      */
     async findAll() {
         return prisma.category.findMany({
@@ -22,6 +22,34 @@ export const categoryRepository = {
                 },
             },
         });
+    },
+
+    /**
+     * Get paginated categories.
+     */
+    async findPaginated(skip: number, take: number) {
+        return prisma.category.findMany({
+            orderBy: { name: "asc" },
+            skip,
+            take,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                createdAt: true,
+                updatedAt: true,
+                _count: {
+                    select: { products: true },
+                },
+            },
+        });
+    },
+
+    /**
+     * Get total count of categories.
+     */
+    async count() {
+        return prisma.category.count();
     },
 
     /**

@@ -46,10 +46,10 @@ const ICONS: Record<ToastType, string> = {
 };
 
 const COLORS: Record<ToastType, { bg: string; border: string; text: string }> = {
-    success: { bg: "#ecfdf5", border: "#10b981", text: "#065f46" },
-    error: { bg: "#fef2f2", border: "#ef4444", text: "#991b1b" },
-    info: { bg: "#eff6ff", border: "#3b82f6", text: "#1e40af" },
-    warning: { bg: "#fffbeb", border: "#f59e0b", text: "#92400e" },
+    success: { bg: "var(--success-soft)", border: "var(--success)", text: "var(--success)" },
+    error: { bg: "var(--danger-soft)", border: "var(--danger)", text: "var(--danger)" },
+    info: { bg: "var(--bg-elevated)", border: "var(--border-strong)", text: "var(--text-primary)" },
+    warning: { bg: "var(--warning-soft)", border: "var(--warning)", text: "var(--warning)" },
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {

@@ -19,6 +19,16 @@ export interface ProductListParams {
     pageSize?: number;
 }
 
+export interface BrandListParams {
+    page?: number;
+    pageSize?: number;
+}
+
+export interface CategoryListParams {
+    page?: number;
+    pageSize?: number;
+}
+
 /** Paginated result wrapper */
 export interface PaginatedResult<T> {
     items: T[];

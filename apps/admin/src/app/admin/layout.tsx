@@ -24,7 +24,7 @@ export default async function AdminLayout({
         <ToastProvider>
             <AdminShell
                 userEmail={user?.email ?? auth.email}
-                userName={user?.name ?? "Admin"}
+                userName={"Ishraq Admin"}
             >
                 {children}
             </AdminShell>

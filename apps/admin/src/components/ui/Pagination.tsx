@@ -15,7 +15,7 @@ export function Pagination({ currentPage, totalPages, total }: PaginationProps) 
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    if (totalPages <= 1) return null;
+    // Remove early return so total count is always visible
 
     const goToPage = (page: number) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -45,11 +45,11 @@ export function Pagination({ currentPage, totalPages, total }: PaginationProps) 
         padding: "6px 12px",
         fontSize: 13,
         fontWeight: 500,
-        border: "1px solid #e5e7eb",
+        border: "1px solid var(--border-default)",
         borderRadius: 6,
         cursor: "pointer",
-        background: "#ffffff",
-        color: "#374151",
+        background: "var(--bg-card)",
+        color: "var(--text-primary)",
         transition: "all 150ms ease",
         minWidth: 36,
         textAlign: "center",
@@ -57,60 +57,62 @@ export function Pagination({ currentPage, totalPages, total }: PaginationProps) 
 
     return (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 20 }}>
-            <span style={{ fontSize: 13, color: "#6b7280" }}>
-                {total} product{total !== 1 ? "s" : ""} total
+            <span style={{ fontSize: 13, color: "var(--text-muted)" }}>
+                {total} item{total !== 1 ? "s" : ""} total
             </span>
 
-            <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                {/* Prev */}
-                <button
-                    onClick={() => goToPage(currentPage - 1)}
-                    disabled={currentPage <= 1}
-                    style={{
-                        ...btnBase,
-                        opacity: currentPage <= 1 ? 0.4 : 1,
-                        cursor: currentPage <= 1 ? "not-allowed" : "pointer",
-                    }}
-                >
-                    ←
-                </button>
+            {totalPages > 1 && (
+                <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                    {/* Prev */}
+                    <button
+                        onClick={() => goToPage(currentPage - 1)}
+                        disabled={currentPage <= 1}
+                        style={{
+                            ...btnBase,
+                            opacity: currentPage <= 1 ? 0.4 : 1,
+                            cursor: currentPage <= 1 ? "not-allowed" : "pointer",
+                        }}
+                    >
+                        ←
+                    </button>
 
-                {/* Page numbers */}
-                {pages.map((p, i) =>
-                    p === "..." ? (
-                        <span key={`dots-${i}`} style={{ padding: "6px 4px", color: "#9ca3af", fontSize: 13 }}>
-                            …
-                        </span>
-                    ) : (
-                        <button
-                            key={p}
-                            onClick={() => goToPage(p)}
-                            style={{
-                                ...btnBase,
-                                background: p === currentPage ? "#2563eb" : "#ffffff",
-                                color: p === currentPage ? "#ffffff" : "#374151",
-                                borderColor: p === currentPage ? "#2563eb" : "#e5e7eb",
-                                fontWeight: p === currentPage ? 700 : 500,
-                            }}
-                        >
-                            {p}
-                        </button>
-                    )
-                )}
+                    {/* Page numbers */}
+                    {pages.map((p, i) =>
+                        p === "..." ? (
+                            <span key={`dots-${i}`} style={{ padding: "6px 4px", color: "var(--text-secondary)", fontSize: 13 }}>
+                                …
+                            </span>
+                        ) : (
+                            <button
+                                key={p}
+                                onClick={() => goToPage(p)}
+                                style={{
+                                    ...btnBase,
+                                    background: p === currentPage ? "var(--hero-bg)" : "var(--bg-card)",
+                                    color: p === currentPage ? "var(--hero-text)" : "var(--text-primary)",
+                                    borderColor: p === currentPage ? "var(--hero-bg)" : "var(--border-default)",
+                                    fontWeight: p === currentPage ? 700 : 500,
+                                }}
+                            >
+                                {p}
+                            </button>
+                        )
+                    )}
 
-                {/* Next */}
-                <button
-                    onClick={() => goToPage(currentPage + 1)}
-                    disabled={currentPage >= totalPages}
-                    style={{
-                        ...btnBase,
-                        opacity: currentPage >= totalPages ? 0.4 : 1,
-                        cursor: currentPage >= totalPages ? "not-allowed" : "pointer",
-                    }}
-                >
-                    →
-                </button>
-            </div>
+                    {/* Next */}
+                    <button
+                        onClick={() => goToPage(currentPage + 1)}
+                        disabled={currentPage >= totalPages}
+                        style={{
+                            ...btnBase,
+                            opacity: currentPage >= totalPages ? 0.4 : 1,
+                            cursor: currentPage >= totalPages ? "not-allowed" : "pointer",
+                        }}
+                    >
+                        →
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

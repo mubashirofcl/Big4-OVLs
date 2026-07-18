@@ -47,10 +47,10 @@ export default async function EditProductPage({ params }: PageProps) {
                 }}
             >
                 <div>
-                    <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0, color: "#111827" }}>
+                    <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0, color: "var(--text-primary)" }}>
                         Edit Product
                     </h1>
-                    <p style={{ fontSize: 14, color: "#6b7280", margin: "4px 0 0" }}>
+                    <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: "4px 0 0" }}>
                         {product.name}
                     </p>
                 </div>

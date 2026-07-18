@@ -44,7 +44,7 @@ export function SearchBar({ placeholder = "Search products..." }: SearchBarProps
         <div style={{ position: "relative", flex: 1, maxWidth: 400 }}>
             <svg
                 width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                stroke="var(--text-secondary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                 style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
             >
                 <circle cx="11" cy="11" r="8" />
@@ -58,13 +58,13 @@ export function SearchBar({ placeholder = "Search products..." }: SearchBarProps
                 style={{
                     width: "100%",
                     padding: "9px 12px 9px 36px",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 8,
+                    border: "none",
+                    borderRadius: "var(--radius-pill)",
                     fontSize: 14,
                     outline: "none",
-                    background: "#ffffff",
-                    color: "#111827",
-                    transition: "border-color 150ms ease",
+                    background: "var(--bg-input)",
+                    color: "var(--text-primary)",
+                    transition: "var(--transition-fast)",
                 }}
             />
         </div>

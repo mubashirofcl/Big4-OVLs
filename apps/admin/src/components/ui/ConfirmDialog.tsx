@@ -70,28 +70,32 @@ export function ConfirmDialog({
                 style={{
                     position: "fixed",
                     inset: 0,
-                    background: "rgba(0,0,0,0.4)",
+                    background: "var(--overlay)",
                     animation: "fade-in 200ms ease",
                 }}
             />
 
             {/* Dialog Box */}
             <div
+                className="responsive-modal"
                 style={{
                     position: "relative",
-                    background: "var(--bg-primary)",
-                    borderRadius: "var(--radius-lg)",
+                    background: "var(--bg-card)",
+                    borderRadius: "var(--radius-xl)",
                     padding: 24,
                     width: "100%",
                     maxWidth: 420,
-                    boxShadow: "var(--shadow-lg)",
+                    boxShadow: "var(--shadow-drawer)",
                     animation: "slide-up 250ms ease",
                 }}
             >
+                {/* Drag handle for mobile */}
+                <div className="mobile-only" style={{ width: 40, height: 4, background: "var(--border-default)", borderRadius: 2, margin: "0 auto 20px" }} />
+
                 <h3
                     style={{
                         margin: 0,
-                        fontSize: 17,
+                        fontSize: 18,
                         fontWeight: 700,
                         color: "var(--text-primary)",
                     }}
@@ -108,11 +112,11 @@ export function ConfirmDialog({
                 >
                     {message}
                 </p>
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
-                    <LoadingButton variant="secondary" onClick={onCancel}>
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
+                    <LoadingButton variant="secondary" onClick={onCancel} style={{ borderRadius: "var(--radius-pill)", flex: 1 }}>
                         {cancelLabel}
                     </LoadingButton>
-                    <LoadingButton variant={variant} loading={loading} onClick={onConfirm}>
+                    <LoadingButton variant={variant} loading={loading} onClick={onConfirm} style={{ borderRadius: "var(--radius-pill)", flex: 1 }}>
                         {confirmLabel}
                     </LoadingButton>
                 </div>

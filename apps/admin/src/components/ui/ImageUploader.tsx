@@ -84,7 +84,7 @@ export function ImageUploader({
     onImagesChange,
     onUploadStart,
     onUploadEnd,
-    maxImages = 8,
+    maxImages = 5,
 }: MultiImageUploaderProps) {
     const { toast } = useToast();
     const [images, setImages] = useState<UploadedImage[]>(currentImages);
@@ -96,6 +96,7 @@ export function ImageUploader({
     // ─── Crop state ─────────────────────────────────────
     const [cropSrc, setCropSrc] = useState<string | null>(null);
     const [cropQueue, setCropQueue] = useState<File[]>([]);
+    const [processedFiles, setProcessedFiles] = useState<File[]>([]);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [croppedArea, setCroppedArea] = useState<Area | null>(null);
@@ -217,42 +218,20 @@ export function ImageUploader({
         if (cropQueue.length > 0) {
             const [next, ...rest] = cropQueue;
             setCropQueue(rest);
-
-            // Process the just-cropped file immediately
-            await processAndUpload([croppedFile]);
-
-            // Open cropper for the next file
+            setProcessedFiles((prev) => [...prev, croppedFile]);
             openCropper(next);
         } else {
-            // Last file — process and upload
-            await processAndUpload([croppedFile]);
-        }
-    };
-
-    // ─── Skip crop (upload original) ────────────────────
-    const handleCropSkip = async () => {
-        if (!cropSrc) return;
-
-        // Convert data URL back to File
-        const res = await fetch(cropSrc);
-        const blob = await res.blob();
-        const file = new File([blob], "original.jpg", { type: "image/jpeg" });
-
-        setCropSrc(null);
-
-        if (cropQueue.length > 0) {
-            const [next, ...rest] = cropQueue;
-            setCropQueue(rest);
-            await processAndUpload([file]);
-            openCropper(next);
-        } else {
-            await processAndUpload([file]);
+            // Last file — process and upload all accumulated files
+            const allFiles = [...processedFiles, croppedFile];
+            setProcessedFiles([]);
+            await processAndUpload(allFiles);
         }
     };
 
     const handleCropCancel = () => {
         setCropSrc(null);
         setCropQueue([]);
+        setProcessedFiles([]);
     };
 
     const removeImage = (idx: number) => {
@@ -268,7 +247,7 @@ export function ImageUploader({
                     display: "block",
                     fontSize: 13,
                     fontWeight: 600,
-                    color: "#111827",
+                    color: "var(--text-primary)",
                     marginBottom: 6,
                 }}
             >
@@ -292,7 +271,7 @@ export function ImageUploader({
                                 position: "relative",
                                 borderRadius: 8,
                                 overflow: "hidden",
-                                border: "1px solid #e5e7eb",
+                                border: "1px solid var(--border-default)",
                                 aspectRatio: "1",
                             }}
                         >
@@ -312,8 +291,8 @@ export function ImageUploader({
                                         left: 4,
                                         fontSize: 9,
                                         fontWeight: 700,
-                                        background: "#2563eb",
-                                        color: "#fff",
+                                        background: "var(--hero-bg)",
+                                        color: "var(--hero-text)",
                                         padding: "1px 6px",
                                         borderRadius: 4,
                                         textTransform: "uppercase",
@@ -333,8 +312,8 @@ export function ImageUploader({
                                     height: 20,
                                     borderRadius: "50%",
                                     border: "none",
-                                    background: "rgba(0,0,0,0.6)",
-                                    color: "#fff",
+                                    background: "var(--overlay-heavy)",
+                                    color: "var(--text-inverse)",
                                     fontSize: 12,
                                     cursor: "pointer",
                                     display: "flex",
@@ -363,30 +342,30 @@ export function ImageUploader({
                         if (!uploading) handleFiles(e.dataTransfer.files);
                     }}
                     style={{
-                        border: `2px dashed ${dragOver ? "#2563eb" : "#d1d5db"}`,
+                        border: `2px dashed ${dragOver ? "var(--hero-bg)" : "var(--border-strong)"}`,
                         borderRadius: 12,
                         padding: "24px 20px",
                         textAlign: "center",
                         cursor: uploading ? "wait" : "pointer",
                         transition: "all 200ms ease",
-                        background: dragOver ? "#eff6ff" : "#f9fafb",
+                        background: dragOver ? "var(--skeleton-base)" : "var(--bg-hover)",
                         position: "relative",
                     }}
                 >
                     {uploading ? (
-                        <div style={{ fontSize: 14, fontWeight: 600, color: "#2563eb" }}>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
                             Uploading {uploadCount}…
                         </div>
                     ) : (
                         <div>
                             <div style={{ fontSize: 28, marginBottom: 4 }}>📷</div>
-                            <div style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>
+                            <div style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)" }}>
                                 Click or drag & drop to upload
                             </div>
-                            <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>
+                            <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 2 }}>
                                 PNG, JPG, WebP — max 5MB each, up to {maxImages} images
                             </div>
-                            <div style={{ fontSize: 10, color: "#b0b8c4", marginTop: 4 }}>
+                            <div style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 4 }}>
                                 ✂️ Crop &amp; auto-compress before upload
                             </div>
                         </div>
@@ -413,108 +392,114 @@ export function ImageUploader({
                         position: "fixed",
                         inset: 0,
                         zIndex: 9999,
-                        background: "rgba(0,0,0,0.85)",
+                        background: "var(--overlay)",
                         display: "flex",
-                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: 16,
                     }}
                 >
-                    {/* Crop area */}
-                    <div style={{ position: "relative", flex: 1 }}>
-                        <Cropper
-                            image={cropSrc}
-                            crop={crop}
-                            zoom={zoom}
-                            aspect={1}
-                            onCropChange={setCrop}
-                            onZoomChange={setZoom}
-                            onCropComplete={onCropComplete}
-                        />
-                    </div>
-
-                    {/* Zoom slider */}
                     <div
+                        className="responsive-modal"
                         style={{
+                            background: "var(--bg-card)",
+                            borderRadius: "var(--radius-xl)",
+                            width: "100%",
+                            maxWidth: 500,
+                            overflow: "hidden",
                             display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: 12,
-                            padding: "12px 24px",
-                            background: "rgba(0,0,0,0.7)",
+                            flexDirection: "column",
+                            boxShadow: "var(--shadow-drawer)",
+                            animation: "slide-up 250ms ease",
                         }}
                     >
-                        <span style={{ color: "#9ca3af", fontSize: 12 * 1 }}>🔍</span>
-                        <input
-                            type="range"
-                            min={1}
-                            max={3}
-                            step={0.05}
-                            value={zoom}
-                            onChange={(e) => setZoom(Number(e.target.value))}
-                            style={{ width: 200, accentColor: "#2563eb" }}
-                        />
-                        <span style={{ color: "#9ca3af", fontSize: 12, minWidth: 40 }}>
-                            {zoom.toFixed(1)}x
-                        </span>
-                    </div>
+                        <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--border-default)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "var(--text-primary)" }}>Adjust Image</h3>
+                            <button onClick={handleCropCancel} style={{ background: "transparent", border: "none", fontSize: 24, color: "var(--text-secondary)", cursor: "pointer", lineHeight: 1 }}>×</button>
+                        </div>
 
-                    {/* Action buttons */}
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            gap: 12,
-                            padding: "16px 24px",
-                            background: "#111827",
-                        }}
-                    >
-                        <button
-                            type="button"
-                            onClick={handleCropCancel}
+                        {/* Crop area */}
+                        <div style={{ position: "relative", width: "100%", height: "60vh", maxHeight: 500, background: "var(--bg-canvas)" }}>
+                            <Cropper
+                                image={cropSrc}
+                                crop={crop}
+                                zoom={zoom}
+                                aspect={1}
+                                onCropChange={setCrop}
+                                onZoomChange={setZoom}
+                                onCropComplete={onCropComplete}
+                            />
+                        </div>
+
+                        {/* Zoom slider */}
+                        <div
                             style={{
-                                padding: "10px 24px",
-                                borderRadius: 8,
-                                border: "1px solid #374151",
-                                background: "transparent",
-                                color: "#9ca3af",
-                                fontSize: 14,
-                                fontWeight: 500,
-                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: 16,
+                                padding: "16px 24px",
+                                borderBottom: "1px solid var(--border-default)",
                             }}
                         >
-                            Cancel
-                        </button>
-                        <button
-                            type="button"
-                            onClick={handleCropSkip}
+                            <span style={{ color: "var(--text-secondary)", fontSize: 12 }}>🔍</span>
+                            <input
+                                type="range"
+                                min={1}
+                                max={3}
+                                step={0.05}
+                                value={zoom}
+                                onChange={(e) => setZoom(Number(e.target.value))}
+                                style={{ width: 200, accentColor: "var(--hero-bg)" }}
+                            />
+                            <span style={{ color: "var(--text-secondary)", fontSize: 12, minWidth: 40, fontWeight: 500 }}>
+                                {zoom.toFixed(1)}x
+                            </span>
+                        </div>
+
+                        {/* Action buttons */}
+                        <div
                             style={{
-                                padding: "10px 24px",
-                                borderRadius: 8,
-                                border: "1px solid #374151",
-                                background: "transparent",
-                                color: "#d1d5db",
-                                fontSize: 14,
-                                fontWeight: 500,
-                                cursor: "pointer",
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                gap: 12,
+                                padding: "16px 24px",
+                                background: "var(--bg-canvas)",
                             }}
                         >
-                            Skip Crop
-                        </button>
-                        <button
-                            type="button"
-                            onClick={handleCropConfirm}
-                            style={{
-                                padding: "10px 32px",
-                                borderRadius: 8,
-                                border: "none",
-                                background: "#2563eb",
-                                color: "#ffffff",
-                                fontSize: 14,
-                                fontWeight: 600,
-                                cursor: "pointer",
-                            }}
-                        >
-                            ✂️ Crop & Upload
-                        </button>
+                            <button
+                                type="button"
+                                onClick={handleCropCancel}
+                                style={{
+                                    padding: "10px 24px",
+                                    borderRadius: "var(--radius-pill)",
+                                    border: "1px solid var(--border-strong)",
+                                    background: "var(--bg-card)",
+                                    color: "var(--text-primary)",
+                                    fontSize: 14,
+                                    fontWeight: 600,
+                                    cursor: "pointer",
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleCropConfirm}
+                                style={{
+                                    padding: "10px 24px",
+                                    borderRadius: "var(--radius-pill)",
+                                    border: "none",
+                                    background: "var(--hero-bg)",
+                                    color: "var(--hero-text)",
+                                    fontSize: 14,
+                                    fontWeight: 600,
+                                    cursor: "pointer",
+                                }}
+                            >
+                                {cropQueue.length > 0 ? "Next ➡️" : "Crop & Upload"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
