@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import productRoutes from './routes/product.routes';
 import categoryRoutes from './routes/category.routes';
 import adminRoutes from './routes/admin.routes';
+import offerRoutes from './routes/offer.routes';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.get('/api/health', (req, res) => {
 // Mount public routes
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/offers', offerRoutes);
 
 // Mount admin routes
 app.use('/api/admin', adminRoutes);

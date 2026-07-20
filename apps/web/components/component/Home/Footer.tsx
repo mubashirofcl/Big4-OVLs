@@ -76,7 +76,7 @@ export default function SiteFooter({
   ];
 
   return (
-    <footer className="relative overflow-hidden  text-white">
+    <footer className="relative overflow-hidden text-foreground bg-background">
       {/* ================= MOBILE ================= */}
 
       <div className="flex flex-col justify-between gap-16 px-6 py-8 lg:hidden">
@@ -98,11 +98,11 @@ export default function SiteFooter({
                 justify-center
                 rounded-full
                 border
-                border-white
+                border-foreground
                 transition-all
                 duration-300
-                hover:bg-white
-                hover:text-black
+                hover:bg-foreground
+                hover:text-background
                 hover:rotate-90
               "
             >
@@ -150,11 +150,11 @@ export default function SiteFooter({
                   justify-center
                   rounded-full
                   border
-                  border-white
+                  border-foreground
                   transition-all
                   duration-300
-                  hover:bg-white
-                  hover:text-black
+                  hover:bg-foreground
+                  hover:text-background
                   hover:rotate-90
                 "
               >

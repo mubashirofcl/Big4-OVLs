@@ -5,6 +5,7 @@ import { productService } from "@/services/product.service";
 import { updateStockSchema } from "@/validations/stock.validation";
 import { revalidatePath } from "next/cache";
 import type { ActionResult } from "@/types/admin.types";
+import { triggerStorefrontRevalidation } from "@/lib/revalidate";
 
 /**
  * Server Action: Update product stock.
@@ -33,6 +34,7 @@ export async function updateStockAction(
         // Revalidate
         revalidatePath("/admin/products");
         revalidatePath("/admin");
+        await triggerStorefrontRevalidation(["products", `product-${result.data?.slug || productId}`]);
 
         return { success: true, message: "Stock updated successfully", data: null };
     } catch {

@@ -4,17 +4,15 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
-const images = [
-  // "/11.png",
-  // "/33.png",
-  // "/22.png",
-  // "/44.png",
-  "/677276fd561b48d392692e3b_LEATHER-min.png",
-  "/677276fd561b48d392692e3c_FABRIC-min.png",
-  "/677276fd561b48d392692e3d_STONE-min.png",
-  "/677276fd561b48d392692e3a_WOOD-min.png",
-  "/677276fd561b48d392692e39_METAL-min.png",
-];
+import spin1 from "@/public/spinHero/spin1.png";
+import spin2 from "@/public/spinHero/spin2.png";
+import spin3 from "@/public/spinHero/spin3.png";
+import spin4 from "@/public/spinHero/spin4.png";
+import spin5 from "@/public/spinHero/spin5.png";
+import spin6 from "@/public/spinHero/spin6.png";
+import spin7 from "@/public/spinHero/spin7.png";
+
+const images = [spin1, spin2, spin3, spin4, spin5, spin6, spin7];
 
 export default function Hero() {
   const imgRef = useRef<HTMLDivElement>(null);
@@ -109,7 +107,7 @@ export default function Hero() {
           width={500}
           height={500}
           priority
-          className="
+          className={`
             w-[150px]
             sm:w-[160px]
             md:w-[190px]
@@ -119,7 +117,9 @@ export default function Hero() {
             h-auto
             object-contain
             select-none
-          "
+            transition-transform duration-300
+            ${index === 3 || index === 5 ? "scale-150" : "scale-100"}
+          `}
         />
       </div>
 

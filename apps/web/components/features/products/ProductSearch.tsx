@@ -45,7 +45,7 @@ export function ProductSearch() {
         placeholder="Search products or SKU..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="pl-9 w-full bg-background/50 backdrop-blur-sm"
+        className="pl-9 w-full bg-secondary/30 border-none shadow-none focus-visible:ring-1 focus-visible:ring-primary/50 transition-all rounded-full h-10"
       />
     </div>
   );

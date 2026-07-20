@@ -119,6 +119,14 @@ export const productService = {
             stock: input.stock,
             imageUrl: input.imageUrl || null,
             category: { connect: { id: input.categoryId } },
+            priceUnit: input.priceUnit,
+            salePrice: input.salePrice ?? null,
+            color: input.color ?? null,
+            material: input.material ?? null,
+            finish: input.finish ?? null,
+            size: input.size ?? null,
+            coveragePerBox: input.coveragePerBox ?? null,
+            highlights: input.highlights ?? [],
         };
 
         // Connect brand if provided
@@ -179,6 +187,14 @@ export const productService = {
         if (input.costPrice !== undefined) data.costPrice = input.costPrice;
         if (input.stock !== undefined) data.stock = input.stock;
         if (input.imageUrl !== undefined) data.imageUrl = input.imageUrl || null;
+        if (input.priceUnit !== undefined) data.priceUnit = input.priceUnit;
+        if (input.salePrice !== undefined) data.salePrice = input.salePrice;
+        if (input.color !== undefined) data.color = input.color;
+        if (input.material !== undefined) data.material = input.material;
+        if (input.finish !== undefined) data.finish = input.finish;
+        if (input.size !== undefined) data.size = input.size;
+        if (input.coveragePerBox !== undefined) data.coveragePerBox = input.coveragePerBox;
+        if (input.highlights !== undefined) data.highlights = input.highlights;
 
         // Handle brand connection/disconnection
         if (input.brandId !== undefined) {

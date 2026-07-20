@@ -5,7 +5,7 @@ import { z } from "zod/v4";
  */
 export const updateStockSchema = z.object({
     productId: z.string().min(1, "Product ID is required"),
-    stock: z.number({ invalid_type_error: "Stock must be a valid number" }).int("Stock must be a whole number").min(0, "Stock cannot be negative"),
+    stock: z.number({ message: "Stock must be a valid number" }).int("Stock must be a whole number").min(0, "Stock cannot be negative"),
 });
 
 export type UpdateStockInput = z.infer<typeof updateStockSchema>;

@@ -4,6 +4,7 @@ import { StockBadge } from "@/components/features/products/StockBadge";
 import { RelatedProducts } from "@/components/features/products/RelatedProducts";
 import { ProductGallery } from "@/components/features/products/ProductGallery";
 import { ProductSpecsAccordion } from "@/components/features/products/ProductSpecsAccordion";
+import { ProductActions } from "@/components/features/products/ProductActions";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Navbar from "@/components/component/Home/Navbar";
@@ -48,6 +49,8 @@ export default async function ProductDetailsPage({ params }: Props) {
 
   const product = response.data;
 
+  const effectivePrice = product.salePrice ?? product.price;
+
   // JSON-LD Structured Data
   const jsonLd = {
     "@context": "https://schema.org",
@@ -60,9 +63,12 @@ export default async function ProductDetailsPage({ params }: Props) {
     offers: {
       "@type": "Offer",
       priceCurrency: "INR",
-      price: product.price,
+      price: effectivePrice,
       availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
     },
+    ...(product.material && { material: product.material }),
+    ...(product.color && { color: product.color }),
+    ...(product.size && { size: product.size }),
   };
 
   return (
@@ -99,36 +105,84 @@ export default async function ProductDetailsPage({ params }: Props) {
             </Breadcrumb>
           </FadeIn>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Left: Image */}
-            <FadeIn delay={0.1}>
-              <ProductGallery 
-                images={product.imageUrl ? [product.imageUrl] : []} 
-                alt={product.name} 
-              />
-            </FadeIn>
+            <div className="lg:sticky lg:top-32 self-start">
+              <FadeIn delay={0.1}>
+                <ProductGallery 
+                  images={Array.from(new Set([
+                    ...(product.imageUrl ? [product.imageUrl] : []),
+                    ...(product.images || [])
+                  ]))} 
+                  alt={product.name} 
+                />
+              </FadeIn>
+            </div>
 
             {/* Right: Info */}
-            <FadeIn delay={0.2} className="flex flex-col">
-              <div className="mb-6 space-y-2">
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+            <FadeIn delay={0.2} className="flex flex-col space-y-5">
+              <div className="space-y-2">
+                <p className="text-micro text-muted-foreground">
                   {product.category.name} {product.brand && `• ${product.brand}`}
                 </p>
-                <h1 className="text-4xl sm:text-5xl font-heading font-semibold leading-tight">
+                <h1 className="text-page-title">
                   {product.name}
                 </h1>
                 
-                <div className="flex items-center gap-4 mt-4">
-                  <span className="text-3xl font-bold text-foreground">
-                    {formatPrice(product.price)}
-                  </span>
+                <div className="flex items-center gap-4 pt-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-[24px] md:text-[26px] font-bold text-foreground leading-[1.2]">
+                      {formatPrice(effectivePrice)}
+                      <span className="text-[14px] font-medium text-muted-foreground ml-2">
+                        {product.priceUnit === "PER_SQM" ? "/ m²" : product.priceUnit === "PER_PIECE" ? "/ pc" : product.priceUnit === "PER_BOX" ? "/ box" : "/ set"}
+                      </span>
+                    </span>
+                    {product.salePrice && (
+                      <span className="text-xl text-muted-foreground line-through">
+                        {formatPrice(product.price)}
+                      </span>
+                    )}
+                  </div>
                   <StockBadge stock={product.stock} />
                 </div>
                 
-                <p className="text-sm text-muted-foreground">SKU: {product.sku}</p>
+                <p className="text-meta">SKU: {product.sku}</p>
               </div>
 
-              <div className="prose max-w-none mb-10 text-muted-foreground">
+              {/* Key Attributes Block */}
+              {(product.color || product.material || product.finish || product.size) && (
+                <div className="border border-border rounded-[var(--radius-lg)] overflow-hidden">
+                  {product.color && (
+                    <div className="flex justify-between items-center px-4 py-3 border-b border-border last:border-0 bg-muted/10">
+                      <span className="text-muted-foreground text-sm">Colour</span>
+                      <div className="flex items-center gap-2">
+                        <span className="w-4 h-4 rounded-full border border-border" style={{ backgroundColor: product.color.toLowerCase().replace(' ', '') }}></span>
+                        <span className="font-medium text-sm">{product.color}</span>
+                      </div>
+                    </div>
+                  )}
+                  {product.material && (
+                    <div className="flex justify-between items-center px-4 py-3 border-b border-border last:border-0 bg-muted/10">
+                      <span className="text-muted-foreground text-sm">Material</span>
+                      <span className="font-medium text-sm">{product.material}</span>
+                    </div>
+                  )}
+                  {product.finish && (
+                    <div className="flex justify-between items-center px-4 py-3 border-b border-border last:border-0 bg-muted/10">
+                      <span className="text-muted-foreground text-sm">Finish</span>
+                      <span className="font-medium text-sm">{product.finish}</span>
+                    </div>
+                  )}
+                  {product.size && (
+                    <div className="flex justify-between items-center px-4 py-3 border-b border-border last:border-0 bg-muted/10">
+                      <span className="text-muted-foreground text-sm">Size</span>
+                      <span className="font-medium text-sm">{product.size}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="text-body max-w-[75ch] text-muted-foreground">
                 {product.description ? (
                   <p className="whitespace-pre-wrap">{product.description}</p>
                 ) : (
@@ -136,38 +190,55 @@ export default async function ProductDetailsPage({ params }: Props) {
                 )}
               </div>
 
-              <div className="hidden lg:flex mt-auto pt-8 border-t border-border gap-4">
-                <Button size="lg" className="h-14 px-8 text-lg rounded-xl" asChild>
-                  <a href="/contact">Enquire Now</a>
-                </Button>
-                <Button size="lg" variant="ghost" className="h-14 px-8 text-lg rounded-xl" asChild>
-                  <a href="/products">Back to Products</a>
-                </Button>
+              {product.highlights && product.highlights.length > 0 && (
+                <div>
+                  <h3 className="text-section-title mb-4">Key Features</h3>
+                  <ul className="space-y-2">
+                    {product.highlights.map((highlight, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-muted-foreground">{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <div className="py-6">
+                <ProductActions 
+                  product={{
+                    name: product.name,
+                    slug: product.slug,
+                    sku: product.sku,
+                    price: product.price,
+                    salePrice: product.salePrice,
+                    priceUnit: product.priceUnit,
+                    coveragePerBox: product.coveragePerBox,
+                  }} 
+                />
               </div>
 
-              {/* Product Info Table */}
-              <ProductSpecsAccordion 
-                specs={[
-                  { label: "Category", value: product.category.name },
-                  ...(product.brand ? [{ label: "Brand", value: product.brand }] : []),
-                  { label: "SKU", value: product.sku },
-                ]}
-              />
+              <div>
+                {/* Product Info Table */}
+                <ProductSpecsAccordion 
+                  specs={[
+                    { label: "Category", value: product.category.name },
+                    ...(product.brand ? [{ label: "Brand", value: product.brand }] : []),
+                    { label: "SKU", value: product.sku },
+                    ...(product.color ? [{ label: "Color", value: product.color }] : []),
+                    ...(product.material ? [{ label: "Material", value: product.material }] : []),
+                    ...(product.finish ? [{ label: "Finish", value: product.finish }] : []),
+                    ...(product.size ? [{ label: "Size", value: product.size }] : []),
+                    ...(product.coveragePerBox ? [{ label: "Coverage per Box", value: `${product.coveragePerBox} m²` }] : []),
+                  ]}
+                />
+              </div>
             </FadeIn>
           </div>
 
-          <RelatedProducts categorySlug={product.category.slug} currentProductId={product.id} />
-        </div>
-        
-        {/* Mobile Sticky CTA */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-background/95 backdrop-blur border-t border-border flex items-center justify-between gap-4">
-          <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Price</span>
-            <span className="text-2xl font-bold text-foreground leading-none">{formatPrice(product.price)}</span>
-          </div>
-          <Button size="lg" className="flex-1 h-14 text-lg rounded-xl" asChild>
-            <a href="/contact">Enquire Now</a>
-          </Button>
+          <RelatedProducts categorySlug={product.category.slug} currentProductId={product.id} material={product.material} />
         </div>
       </main>
       <SiteFooter />

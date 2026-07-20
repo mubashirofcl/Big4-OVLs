@@ -5,6 +5,7 @@ import { brandService } from "@/services/brand.service";
 import { createBrandSchema, updateBrandSchema } from "@/validations/brand.validation";
 import { revalidatePath } from "next/cache";
 import type { ActionResult } from "@/types/admin.types";
+import { triggerStorefrontRevalidation } from "@/lib/revalidate";
 
 /**
  * Server Action: Create a new brand.
@@ -24,6 +25,7 @@ export async function createBrandAction(name: string): Promise<ActionResult> {
             revalidatePath("/admin/brands");
             revalidatePath("/admin/products");
             revalidatePath("/admin");
+            await triggerStorefrontRevalidation(["products"]);
         }
 
         return result;
@@ -50,6 +52,7 @@ export async function updateBrandAction(id: string, name: string): Promise<Actio
             revalidatePath("/admin/brands");
             revalidatePath("/admin/products");
             revalidatePath("/admin");
+            await triggerStorefrontRevalidation(["products"]);
         }
 
         return result;
@@ -71,6 +74,7 @@ export async function deleteBrandAction(id: string): Promise<ActionResult> {
             revalidatePath("/admin/brands");
             revalidatePath("/admin/products");
             revalidatePath("/admin");
+            await triggerStorefrontRevalidation(["products"]);
         }
 
         return result;

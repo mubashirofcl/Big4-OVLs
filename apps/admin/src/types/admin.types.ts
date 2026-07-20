@@ -5,7 +5,7 @@
 /** Standardized return type for Server Actions */
 export type ActionResult<T = null> =
     | { success: true; message: string; data: T }
-    | { success: false; message: string; data: null };
+    | { success: false; message: string; data: null; errors?: Record<string, string[]> };
 
 /** Search/filter/pagination params for product listing */
 export interface ProductListParams {

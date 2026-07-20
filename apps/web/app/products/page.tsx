@@ -53,10 +53,13 @@ export default async function ProductsPage({
 
   const categories = categoriesRes.data || [];
   
-  // Extract unique brands from the current products response (since API doesn't have a brands endpoint)
-  // Ideally this would come from a dedicated `/brands` API endpoint.
-  // For now, we mock it or extract from known.
+  // Extract unique filter options from the current products response
+  // Ideally this would come from a dedicated API endpoint in a production app.
   const brands = Array.from(new Set(productsRes?.data.map((p) => p.brand).filter(Boolean) as string[]));
+  const materials = Array.from(new Set(productsRes?.data.map((p) => p.material).filter(Boolean) as string[]));
+  const finishes = Array.from(new Set(productsRes?.data.map((p) => p.finish).filter(Boolean) as string[]));
+  const colors = Array.from(new Set(productsRes?.data.map((p) => p.color).filter(Boolean) as string[]));
+  const sizes = Array.from(new Set(productsRes?.data.map((p) => p.size).filter(Boolean) as string[]));
 
   return (
     <div className="light-theme bg-background text-foreground min-h-screen">
@@ -65,7 +68,7 @@ export default async function ProductsPage({
         <div className="max-w-[1400px] mx-auto px-6 sm:px-10 xl:px-16">
           <FadeIn>
             {/* Breadcrumbs */}
-            <Breadcrumb className="mb-6">
+            <Breadcrumb className="mb-8">
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink href="/">Home</BreadcrumbLink>
@@ -78,23 +81,31 @@ export default async function ProductsPage({
             </Breadcrumb>
 
             {/* Page Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-8">
               <div>
-                <h1 className="font-heading text-4xl sm:text-5xl font-semibold mb-3 uppercase">
+                <h1 className="text-3xl md:text-5xl lg:text-page-title font-medium tracking-tight mb-2 uppercase">
                   Our Products
                 </h1>
-                <p className="text-muted-foreground text-lg">
+                <p className="text-sm md:text-base text-muted-foreground">
                   {productsRes?.pagination.total 
                     ? `Showing ${(page - 1) * limit + 1}–${Math.min(page * limit, productsRes.pagination.total)} of ${productsRes.pagination.total} products`
                     : "Browse our collection"}
                 </p>
               </div>
               
-              <div className="flex flex-col w-full md:w-auto sm:flex-row items-center gap-4">
-                <div className="w-full sm:w-auto sticky top-[4.5rem] z-40 lg:static bg-background/95 backdrop-blur py-3 -mx-6 px-6 lg:mx-0 lg:px-0 lg:py-0 border-b lg:border-none border-border">
+              <div className="flex flex-col w-full md:w-auto sm:flex-row items-center gap-3">
+                <div className="w-full sm:w-auto sticky top-[4.5rem] z-40 lg:static bg-background/95 backdrop-blur py-2 lg:py-0">
                   <ProductSearch />
                 </div>
-                <div className="hidden lg:block">
+                <div className="hidden lg:flex items-center gap-4">
+                  <ProductFilters 
+                    categories={categories} 
+                    brands={brands} 
+                    materials={materials}
+                    finishes={finishes}
+                    colors={colors}
+                    sizes={sizes}
+                  />
                   <SortSelect />
                 </div>
               </div>
@@ -105,20 +116,38 @@ export default async function ProductsPage({
             <ActiveFilterChips />
           </FadeIn>
 
-          <MobileProductControls categories={categories} brands={brands} />
+          <MobileProductControls 
+            categories={categories} 
+            brands={brands} 
+            materials={materials}
+            finishes={finishes}
+            colors={colors}
+            sizes={sizes}
+          />
 
           <div className="flex flex-col lg:flex-row gap-8">
-            <ProductFilters categories={categories} brands={brands} />
             
-            <div className="flex-1">
+            <div className="flex-1 w-full">
               {productsRes ? (
-                <>
-                  <ProductGrid products={productsRes.data} />
-                  <ProductPagination 
-                    currentPage={productsRes.pagination.page} 
-                    totalPages={productsRes.pagination.totalPages} 
-                  />
-                </>
+                productsRes.data.length > 0 ? (
+                  <>
+                    <ProductGrid products={productsRes.data} />
+                    <ProductPagination 
+                      currentPage={productsRes.pagination.page} 
+                      totalPages={productsRes.pagination.totalPages} 
+                    />
+                  </>
+                ) : (
+                  <div className="py-24 flex flex-col items-center justify-center text-center bg-muted/20 rounded-[var(--radius-xl)] border border-border/50 px-4">
+                    <h3 className="text-2xl font-semibold mb-3">No products found</h3>
+                    <p className="text-muted-foreground max-w-md mb-8">
+                      We couldn't find any products matching your selected filters. Try adjusting your search criteria or clear all filters to see everything.
+                    </p>
+                    <a href="/products" className="inline-flex items-center justify-center h-12 px-6 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
+                      Clear all filters
+                    </a>
+                  </div>
+                )
               ) : (
                 <div className="py-20 text-center text-red-500">
                   <h3 className="text-xl font-semibold mb-2">Error loading products</h3>

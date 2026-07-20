@@ -5,6 +5,7 @@ import { productService } from "@/services/product.service";
 import { createProductSchema, updateProductSchema } from "@/validations/product.validation";
 import { revalidatePath } from "next/cache";
 import type { ActionResult } from "@/types/admin.types";
+import { triggerStorefrontRevalidation } from "@/lib/revalidate";
 
 /**
  * Server Action: Create a new product.
@@ -32,6 +33,14 @@ export async function createProductAction(formData: FormData): Promise<ActionRes
             imageUrl: (formData.get("imageUrl") as string) || undefined,
             images,
             categoryId: formData.get("categoryId") as string,
+            priceUnit: (formData.get("priceUnit") as string) || undefined,
+            salePrice: formData.has("salePrice") && formData.get("salePrice") ? parseFloat(formData.get("salePrice") as string) : undefined,
+            color: (formData.get("color") as string) || undefined,
+            material: (formData.get("material") as string) || undefined,
+            finish: (formData.get("finish") as string) || undefined,
+            size: (formData.get("size") as string) || undefined,
+            coveragePerBox: formData.has("coveragePerBox") && formData.get("coveragePerBox") ? parseFloat(formData.get("coveragePerBox") as string) : undefined,
+            highlights: formData.has("highlights") ? JSON.parse(formData.get("highlights") as string) : undefined,
         };
 
         const parsed = createProductSchema.safeParse(raw);
@@ -48,9 +57,12 @@ export async function createProductAction(formData: FormData): Promise<ActionRes
 
         revalidatePath("/admin/products");
         revalidatePath("/admin");
+        await triggerStorefrontRevalidation(["products"]);
 
         return { success: true, message: "Product created successfully", data: null };
-    } catch {
+    } catch (error: any) {
+        if (error?.message === "NEXT_REDIRECT") throw error;
+        console.error("createProductAction error:", error);
         return { success: false, message: "Something went wrong", data: null };
     }
 }
@@ -84,6 +96,14 @@ export async function updateProductAction(
             imageUrl: formData.get("imageUrl") as string | undefined,
             images,
             categoryId: (formData.get("categoryId") as string) || undefined,
+            priceUnit: formData.has("priceUnit") ? (formData.get("priceUnit") as string) : undefined,
+            salePrice: formData.has("salePrice") && formData.get("salePrice") ? parseFloat(formData.get("salePrice") as string) : undefined,
+            color: formData.has("color") ? (formData.get("color") as string || undefined) : undefined,
+            material: formData.has("material") ? (formData.get("material") as string || undefined) : undefined,
+            finish: formData.has("finish") ? (formData.get("finish") as string || undefined) : undefined,
+            size: formData.has("size") ? (formData.get("size") as string || undefined) : undefined,
+            coveragePerBox: formData.has("coveragePerBox") && formData.get("coveragePerBox") ? parseFloat(formData.get("coveragePerBox") as string) : undefined,
+            highlights: formData.has("highlights") ? JSON.parse(formData.get("highlights") as string) : undefined,
         };
 
         const parsed = updateProductSchema.safeParse(raw);
@@ -101,9 +121,12 @@ export async function updateProductAction(
         revalidatePath("/admin/products");
         revalidatePath(`/admin/products/${productId}`);
         revalidatePath("/admin");
+        await triggerStorefrontRevalidation(["products", `product-${result.data?.slug || productId}`]);
 
         return { success: true, message: "Product updated successfully", data: null };
-    } catch {
+    } catch (error: any) {
+        if (error?.message === "NEXT_REDIRECT") throw error;
+        console.error("updateProductAction error:", error);
         return { success: false, message: "Something went wrong", data: null };
     }
 }
@@ -122,6 +145,7 @@ export async function archiveProductAction(productId: string): Promise<ActionRes
 
         revalidatePath("/admin/products");
         revalidatePath("/admin");
+        await triggerStorefrontRevalidation(["products", `product-${result.data?.slug || productId}`]);
 
         return { success: true, message: "Product archived", data: null };
     } catch {
@@ -143,6 +167,7 @@ export async function restoreProductAction(productId: string): Promise<ActionRes
 
         revalidatePath("/admin/products");
         revalidatePath("/admin");
+        await triggerStorefrontRevalidation(["products", `product-${result.data?.slug || productId}`]);
 
         return { success: true, message: "Product restored", data: null };
     } catch {
@@ -164,6 +189,7 @@ export async function deleteProductAction(productId: string): Promise<ActionResu
 
         revalidatePath("/admin/products");
         revalidatePath("/admin");
+        await triggerStorefrontRevalidation(["products", `product-${result.data?.slug || productId}`]);
 
         return { success: true, message: "Product deleted", data: null };
     } catch {

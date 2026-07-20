@@ -5,6 +5,7 @@ import { categoryService } from "@/services/category.service";
 import { createCategorySchema, updateCategorySchema } from "@/validations/category.validation";
 import { revalidatePath } from "next/cache";
 import type { ActionResult } from "@/types/admin.types";
+import { triggerStorefrontRevalidation } from "@/lib/revalidate";
 
 /**
  * Server Action: Create a new category.
@@ -24,6 +25,7 @@ export async function createCategoryAction(name: string): Promise<ActionResult> 
             revalidatePath("/admin/categories");
             revalidatePath("/admin/products");
             revalidatePath("/admin");
+            await triggerStorefrontRevalidation(["categories", "products"]);
         }
 
         return result;
@@ -50,6 +52,7 @@ export async function updateCategoryAction(id: string, name: string): Promise<Ac
             revalidatePath("/admin/categories");
             revalidatePath("/admin/products");
             revalidatePath("/admin");
+            await triggerStorefrontRevalidation(["categories", "products"]);
         }
 
         return result;
@@ -71,6 +74,7 @@ export async function deleteCategoryAction(id: string): Promise<ActionResult> {
             revalidatePath("/admin/categories");
             revalidatePath("/admin/products");
             revalidatePath("/admin");
+            await triggerStorefrontRevalidation(["categories", "products"]);
         }
 
         return result;

@@ -71,13 +71,21 @@ export default async function EditProductPage({ params }: PageProps) {
                     sku: product.sku,
                     description: product.description,
                     brandId: product.brandId,
-                    price: product.price,
-                    costPrice: product.costPrice,
+                    price: Number(product.price),
+                    costPrice: Number(product.costPrice),
                     stock: product.stock,
                     imageUrl: product.imageUrl,
                     images: product.images,
                     categoryId: product.categoryId,
                     isActive: product.isActive,
+                    priceUnit: product.priceUnit,
+                    salePrice: product.salePrice ? Number(product.salePrice) : null,
+                    color: product.color,
+                    material: product.material,
+                    finish: product.finish,
+                    size: product.size,
+                    coveragePerBox: product.coveragePerBox ? Number(product.coveragePerBox) : null,
+                    highlights: product.highlights,
                 }}
             />
         </div>

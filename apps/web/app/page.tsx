@@ -6,10 +6,10 @@ import Navbar from "@/components/component/Home/Navbar";
 import FullscreenMenu from "@/components/component/Home/FullscreenMenu";
 
 import Hero from "@/components/component/Home/Hero";
+import OfferCarousel from "@/components/component/Home/OfferCarousel";
 import AboutSection from "@/components/component/Home/AboutSection";
 import BrandsSection from "@/components/component/Home/Brands";
 import Categories from "@/components/component/Home/Categories";
-import CatalogSection from "@/components/component/Home/Catlog";
 import InfiniteGallery from "@/components/component/Home/InfiniteGallery";
 import ScrollGallery from "@/components/component/Home/ScrollGallery";
 import ShowroomSection from "@/components/component/Home/ShowroomSection";
@@ -43,6 +43,8 @@ export default function Home() {
 
                 <Categories />
 
+                <OfferCarousel />
+
                 <AboutSection />
 
                 <ScrollGallery />
@@ -50,8 +52,6 @@ export default function Home() {
                 <ThreeDComponent />
 
                 <BrandsSection />
-
-                <CatalogSection />
 
                 <ShowroomSection />
 

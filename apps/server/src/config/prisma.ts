@@ -19,11 +19,11 @@ function createPrismaClient() {
 
 // Prevent multiple instances of Prisma Client in development
 declare global {
-  var prisma: PrismaClient | undefined;
+  var prisma_v2: PrismaClient | undefined;
 }
 
-export const prisma = global.prisma || createPrismaClient();
+export const prisma = global.prisma_v2 || createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') {
-  global.prisma = prisma;
+  global.prisma_v2 = prisma;
 }

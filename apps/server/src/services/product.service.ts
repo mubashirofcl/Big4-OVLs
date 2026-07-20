@@ -18,6 +18,7 @@ export class ProductService {
         name: product.category.name,
         slug: product.category.slug,
       } : null,
+      images: product.images ? product.images.map((img: any) => img.url) : [],
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
     };
@@ -43,10 +44,54 @@ export class ProductService {
       where.stock = { gt: 0 };
     }
 
-    const [products, total] = await Promise.all([
-      this.repository.findAll({ skip, take: limit, where }),
-      this.repository.count(where),
-    ]);
+    if (filters.material) where.material = filters.material;
+    if (filters.finish) where.finish = filters.finish;
+    if (filters.color) where.color = filters.color;
+    if (filters.size) where.size = filters.size;
+
+    // Price range using JS logic for where clause since Prisma doesn't natively support COALESCE in where.
+    // However, if we just use OR for salePrice vs price, it's doable:
+    if (filters.minPrice || filters.maxPrice) {
+      const min = Number(filters.minPrice) || 0;
+      const max = Number(filters.maxPrice) || Number.MAX_SAFE_INTEGER;
+      where.OR = [
+        { salePrice: { gte: min, lte: max } },
+        { salePrice: null, price: { gte: min, lte: max } },
+      ];
+    }
+
+    let products: any[] = [];
+    let total = 0;
+
+    if (filters.sort === 'price_asc' || filters.sort === 'price_desc') {
+      const direction = filters.sort === 'price_asc' ? 'asc' : 'desc';
+      const [sortedIds, rawTotal] = await Promise.all([
+        this.repository.findSortedIdsByPrice({ skip, take: limit, filters, direction }),
+        this.repository.countRaw(filters),
+      ]);
+      
+      if (sortedIds.length > 0) {
+        const unorderedProducts = await this.repository.findAll({
+          where: { id: { in: sortedIds } },
+        });
+        // Restore sort order
+        products = sortedIds.map(id => unorderedProducts.find(p => p.id === id)).filter(Boolean);
+      } else {
+        products = [];
+      }
+      total = rawTotal;
+    } else {
+      let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: 'desc' };
+      if (filters.sort === 'name_asc') orderBy = { name: 'asc' };
+      else if (filters.sort === 'name_desc') orderBy = { name: 'desc' };
+      
+      const [fetchedProducts, standardTotal] = await Promise.all([
+        this.repository.findAll({ skip, take: limit, where, orderBy }),
+        this.repository.count(where),
+      ]);
+      products = fetchedProducts;
+      total = standardTotal;
+    }
 
     return {
       data: products.map(this.mapToPublicDTO),

@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { verifyAccessToken } from "@/lib/auth";
-import { getAccessToken } from "@/lib/cookies";
+import { verifyAccessToken, verifyRefreshToken } from "@/lib/auth";
+import { getAccessToken, getRefreshToken } from "@/lib/cookies";
 import { uploadImage } from "@/lib/cloudinary";
 
 /**
@@ -12,9 +12,13 @@ import { uploadImage } from "@/lib/cloudinary";
  */
 export async function POST(req: NextRequest) {
     try {
-        // Auth check
-        const token = await getAccessToken();
-        if (!token || !verifyAccessToken(token)) {
+        // Auth check (allow if either token is valid, so they don't get stuck if access token expires during a session)
+        const accessToken = await getAccessToken();
+        const refreshToken = await getRefreshToken();
+        
+        const isAuth = (accessToken && verifyAccessToken(accessToken)) || (refreshToken && verifyRefreshToken(refreshToken));
+        
+        if (!isAuth) {
             return Response.json(
                 { success: false, message: "Authentication required", data: null },
                 { status: 401 }

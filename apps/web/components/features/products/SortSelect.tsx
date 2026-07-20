@@ -21,15 +21,15 @@ export function SortSelect() {
 
   return (
     <Select value={currentSort} onValueChange={onSortChange}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-full sm:w-[180px] h-10">
         <SelectValue placeholder="Sort by" />
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="newest">Newest</SelectItem>
-        <SelectItem value="price-asc">Price: Low to High</SelectItem>
-        <SelectItem value="price-desc">Price: High to Low</SelectItem>
-        <SelectItem value="name-asc">Name: A to Z</SelectItem>
-        <SelectItem value="name-desc">Name: Z to A</SelectItem>
+        <SelectItem value="price_asc">Price: Low to High</SelectItem>
+        <SelectItem value="price_desc">Price: High to Low</SelectItem>
+        <SelectItem value="name_asc">Name: A to Z</SelectItem>
+        <SelectItem value="name_desc">Name: Z to A</SelectItem>
       </SelectContent>
     </Select>
   );

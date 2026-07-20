@@ -70,6 +70,13 @@ model Brand {
   @@map("brands")
 }
 
+enum PriceUnit {
+  PER_SQM
+  PER_PIECE
+  PER_SET
+  PER_BOX
+}
+
 model Product {
   id          String         @id @default(cuid())
   name        String
@@ -77,15 +84,23 @@ model Product {
   sku         String         @unique
   description String?
   price       Float
-  costPrice   Float
-  stock       Int            @default(0)
-  imageUrl    String?
-  isActive    Boolean        @default(true)
-  categoryId  String
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-  brandId     String?
-  images      ProductImage[]
+  costPrice      Float
+  stock          Int            @default(0)
+  imageUrl       String?
+  isActive       Boolean        @default(true)
+  categoryId     String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  brandId        String?
+  priceUnit      PriceUnit      @default(PER_PIECE)
+  salePrice      Decimal?       @db.Decimal(10, 2)
+  color          String?
+  material       String?
+  finish         String?
+  size           String?
+  coveragePerBox Decimal?       @db.Decimal(8, 3)
+  highlights     String[]       @default([])
+  images         ProductImage[]
   brand       Brand?         @relation(fields: [brandId], references: [id])
   category    Category       @relation(fields: [categoryId], references: [id])
 

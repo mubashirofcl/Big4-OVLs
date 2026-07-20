@@ -38,6 +38,14 @@ interface ProductData {
     images: ProductImageData[];
     categoryId: string;
     isActive: boolean;
+    priceUnit: "PER_SQM" | "PER_PIECE" | "PER_SET" | "PER_BOX";
+    salePrice: number | null;
+    color: string | null;
+    material: string | null;
+    finish: string | null;
+    size: string | null;
+    coveragePerBox: number | null;
+    highlights: string[];
 }
 
 interface ProductFormProps {
@@ -71,6 +79,16 @@ export function ProductForm({ categories, brands, product }: ProductFormProps) {
     const [costPrice, setCostPrice] = useState(product?.costPrice?.toString() ?? "");
     const [stock, setStock] = useState(product?.stock?.toString() ?? "0");
     const [categoryId, setCategoryId] = useState(product?.categoryId ?? "");
+    
+    // New fields
+    const [priceUnit, setPriceUnit] = useState(product?.priceUnit ?? "PER_PIECE");
+    const [salePrice, setSalePrice] = useState(product?.salePrice?.toString() ?? "");
+    const [color, setColor] = useState(product?.color ?? "");
+    const [material, setMaterial] = useState(product?.material ?? "");
+    const [finish, setFinish] = useState(product?.finish ?? "");
+    const [size, setSize] = useState(product?.size ?? "");
+    const [coveragePerBox, setCoveragePerBox] = useState(product?.coveragePerBox?.toString() ?? "");
+    const [highlights, setHighlights] = useState<string[]>(product?.highlights ?? []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -87,6 +105,14 @@ export function ProductForm({ categories, brands, product }: ProductFormProps) {
             imageUrl: images.length > 0 ? images[0].url : undefined,
             images,
             categoryId,
+            priceUnit,
+            salePrice: salePrice ? parseFloat(salePrice) : undefined,
+            color: color.trim() || undefined,
+            material: material.trim() || undefined,
+            finish: finish.trim() || undefined,
+            size: size.trim() || undefined,
+            coveragePerBox: coveragePerBox ? parseFloat(coveragePerBox) : undefined,
+            highlights: highlights.map(h => h.trim()).filter(Boolean),
         };
 
         const schema = isEdit ? updateProductSchema : createProductSchema;
@@ -120,6 +146,15 @@ export function ProductForm({ categories, brands, product }: ProductFormProps) {
         const imageUrl = images.length > 0 ? images[0].url : "";
         formData.set("imageUrl", imageUrl);
         formData.set("images", JSON.stringify(images));
+        
+        formData.set("priceUnit", rawData.priceUnit);
+        if (rawData.salePrice !== undefined) formData.set("salePrice", rawData.salePrice.toString());
+        if (rawData.color) formData.set("color", rawData.color);
+        if (rawData.material) formData.set("material", rawData.material);
+        if (rawData.finish) formData.set("finish", rawData.finish);
+        if (rawData.size) formData.set("size", rawData.size);
+        if (rawData.coveragePerBox !== undefined) formData.set("coveragePerBox", rawData.coveragePerBox.toString());
+        if (rawData.highlights && rawData.highlights.length > 0) formData.set("highlights", JSON.stringify(rawData.highlights));
 
         const result = isEdit
             ? await updateProductAction(product.id, formData)
@@ -267,21 +302,51 @@ export function ProductForm({ categories, brands, product }: ProductFormProps) {
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 16 }}>
                             <div>
                                 <label htmlFor="price" style={labelStyle}>Selling Price (₹) *</label>
+                                <div style={{ display: "flex", gap: 8 }}>
+                                    <input
+                                        id="price"
+                                        type="number"
+                                        inputMode="decimal"
+                                        min="0"
+                                        step="0.01"
+                                        value={price}
+                                        onChange={(e) => setPrice(e.target.value)}
+                                        placeholder="0.00"
+                                        style={{ ...getInputStyle(!!errors.price), flex: 2 }}
+                                        aria-invalid={!!errors.price}
+                                        aria-describedby={errors.price ? "price-error" : undefined}
+                                        required
+                                    />
+                                    <select
+                                        id="priceUnit"
+                                        value={priceUnit}
+                                        onChange={(e) => setPriceUnit(e.target.value as "PER_SQM" | "PER_PIECE" | "PER_SET" | "PER_BOX")}
+                                        style={{ ...getInputStyle(false), flex: 1, padding: "10px 8px" }}
+                                    >
+                                        <option value="PER_PIECE">/ pc</option>
+                                        <option value="PER_SQM">/ m²</option>
+                                        <option value="PER_BOX">/ box</option>
+                                        <option value="PER_SET">/ set</option>
+                                    </select>
+                                </div>
+                                {errors.price && <span id="price-error" style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--danger)" }}>{errors.price[0]}</span>}
+                            </div>
+                            <div>
+                                <label htmlFor="salePrice" style={labelStyle}>Sale Price (₹) <span style={{ fontWeight: 400, color: "var(--text-secondary)" }}>(optional)</span></label>
                                 <input
-                                    id="price"
+                                    id="salePrice"
                                     type="number"
                                     inputMode="decimal"
                                     min="0"
                                     step="0.01"
-                                    value={price}
-                                    onChange={(e) => setPrice(e.target.value)}
+                                    value={salePrice}
+                                    onChange={(e) => setSalePrice(e.target.value)}
                                     placeholder="0.00"
-                                    style={getInputStyle(!!errors.price)}
-                                    aria-invalid={!!errors.price}
-                                    aria-describedby={errors.price ? "price-error" : undefined}
-                                    required
+                                    style={getInputStyle(!!errors.salePrice)}
+                                    aria-invalid={!!errors.salePrice}
+                                    aria-describedby={errors.salePrice ? "salePrice-error" : undefined}
                                 />
-                                {errors.price && <span id="price-error" style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--danger)" }}>{errors.price[0]}</span>}
+                                {errors.salePrice && <span id="salePrice-error" style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--danger)" }}>{errors.salePrice[0]}</span>}
                             </div>
                             <div>
                                 <label htmlFor="costPrice" style={labelStyle}>Cost Price (₹) *</label>
@@ -318,6 +383,111 @@ export function ProductForm({ categories, brands, product }: ProductFormProps) {
                                 />
                                 {errors.stock && <span id="stock-error" style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--danger)" }}>{errors.stock[0]}</span>}
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Product Details Card */}
+                    <div className="saas-card" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                        <h3 style={{ fontSize: 16, fontWeight: 600, margin: 0, paddingBottom: 16, borderBottom: "1px solid var(--border-default)", color: "var(--text-primary)" }}>Product Details</h3>
+                        
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
+                            <div>
+                                <label htmlFor="color" style={labelStyle}>Color</label>
+                                <input id="color" type="text" value={color} onChange={(e) => setColor(e.target.value)} placeholder="e.g. Matte Black" style={getInputStyle(!!errors.color)} />
+                                {errors.color && <span style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--danger)" }}>{errors.color[0]}</span>}
+                            </div>
+                            <div>
+                                <label htmlFor="material" style={labelStyle}>Material</label>
+                                <input id="material" type="text" value={material} onChange={(e) => setMaterial(e.target.value)} placeholder="e.g. Ceramic" style={getInputStyle(!!errors.material)} />
+                                {errors.material && <span style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--danger)" }}>{errors.material[0]}</span>}
+                            </div>
+                            <div>
+                                <label htmlFor="finish" style={labelStyle}>Finish</label>
+                                <input id="finish" type="text" value={finish} onChange={(e) => setFinish(e.target.value)} placeholder="e.g. Glossy" style={getInputStyle(!!errors.finish)} />
+                                {errors.finish && <span style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--danger)" }}>{errors.finish[0]}</span>}
+                            </div>
+                            <div>
+                                <label htmlFor="size" style={labelStyle}>Size</label>
+                                <input id="size" type="text" value={size} onChange={(e) => setSize(e.target.value)} placeholder="e.g. 600x1200mm" style={getInputStyle(!!errors.size)} />
+                                {errors.size && <span style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--danger)" }}>{errors.size[0]}</span>}
+                            </div>
+                            <div>
+                                <label htmlFor="coveragePerBox" style={labelStyle}>Coverage per Box (m²)</label>
+                                <input id="coveragePerBox" type="number" step="0.001" min="0" value={coveragePerBox} onChange={(e) => setCoveragePerBox(e.target.value)} placeholder="1.44" style={getInputStyle(!!errors.coveragePerBox)} />
+                                {errors.coveragePerBox && <span style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--danger)" }}>{errors.coveragePerBox[0]}</span>}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Highlights Card */}
+                    <div className="saas-card" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 16, borderBottom: "1px solid var(--border-default)" }}>
+                            <h3 style={{ fontSize: 16, fontWeight: 600, margin: 0, color: "var(--text-primary)" }}>Key Features / Highlights</h3>
+                            <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>{highlights.length}/10</span>
+                        </div>
+
+                        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                            {highlights.map((highlight, index) => (
+                                <div key={index} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: 2, marginTop: 4 }}>
+                                        <button type="button" onClick={() => {
+                                            if (index === 0) return;
+                                            const newH = [...highlights];
+                                            [newH[index - 1], newH[index]] = [newH[index], newH[index - 1]];
+                                            setHighlights(newH);
+                                        }} disabled={index === 0} style={{ padding: 4, background: "transparent", border: "none", cursor: index === 0 ? "default" : "pointer", opacity: index === 0 ? 0.3 : 1 }}>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+                                        </button>
+                                        <button type="button" onClick={() => {
+                                            if (index === highlights.length - 1) return;
+                                            const newH = [...highlights];
+                                            [newH[index], newH[index + 1]] = [newH[index + 1], newH[index]];
+                                            setHighlights(newH);
+                                        }} disabled={index === highlights.length - 1} style={{ padding: 4, background: "transparent", border: "none", cursor: index === highlights.length - 1 ? "default" : "pointer", opacity: index === highlights.length - 1 ? 0.3 : 1 }}>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                                        </button>
+                                    </div>
+                                    <div style={{ flex: 1 }}>
+                                        <input
+                                            type="text"
+                                            value={highlight}
+                                            onChange={(e) => {
+                                                const newH = [...highlights];
+                                                newH[index] = e.target.value.substring(0, 120);
+                                                setHighlights(newH);
+                                            }}
+                                            placeholder="e.g. Scratch resistant and easy to clean"
+                                            style={getInputStyle(false)}
+                                        />
+                                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 4 }}>
+                                            <span style={{ fontSize: 11, color: highlight.length >= 120 ? "var(--danger)" : "var(--text-secondary)" }}>{highlight.length}/120</span>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setHighlights(highlights.filter((_, i) => i !== index))}
+                                        style={{ padding: "10px", background: "transparent", border: "1px solid var(--border-default)", borderRadius: "var(--radius-md)", cursor: "pointer", color: "var(--danger)", display: "flex", alignItems: "center", justifyContent: "center" }}
+                                    >
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                                    </button>
+                                </div>
+                            ))}
+                            
+                            {highlights.length < 10 && (
+                                <button
+                                    type="button"
+                                    onClick={() => setHighlights([...highlights, ""])}
+                                    style={{
+                                        padding: "12px", background: "var(--bg-canvas)", border: "1px dashed var(--border-default)", borderRadius: "var(--radius-md)", cursor: "pointer", color: "var(--text-secondary)", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, transition: "background 0.2s"
+                                    }}
+                                    onMouseOver={(e) => e.currentTarget.style.background = "var(--bg-card)"}
+                                    onMouseOut={(e) => e.currentTarget.style.background = "var(--bg-canvas)"}
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                                    Add Feature Highlight
+                                </button>
+                            )}
+                            {errors.highlights && <span style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--danger)" }}>{errors.highlights[0]}</span>}
                         </div>
                     </div>
                 </div>

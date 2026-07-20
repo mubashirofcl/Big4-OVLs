@@ -10,6 +10,7 @@ const NAV_ITEMS = [
     { href: "/admin/products", label: "Products", icon: ProductIcon },
     { href: "/admin/brands", label: "Brands", icon: BrandIcon },
     { href: "/admin/categories", label: "Categories", icon: CategoryIcon },
+    { href: "/admin/offers", label: "Offers", icon: OfferIcon },
 ];
 
 interface SidebarProps {
@@ -278,6 +279,16 @@ function CategoryIcon({ active }: { active: boolean }) {
             <line x1="3" y1="6" x2="3.01" y2="6" />
             <line x1="3" y1="12" x2="3.01" y2="12" />
             <line x1="3" y1="18" x2="3.01" y2="18" />
+        </svg>
+    );
+}
+
+function OfferIcon({ active }: { active: boolean }) {
+    return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? "var(--hero-text)" : "var(--text-secondary)"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+            <line x1="7" y1="7" x2="7.01" y2="7" />
+            <path d="M11 11h2v2h-2z" />
         </svg>
     );
 }

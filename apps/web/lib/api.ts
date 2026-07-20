@@ -1,6 +1,9 @@
 import { Category, PaginatedResponse, Product, ProductFilters } from "@/types/product";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+// On the server, we need the full URL. On the client, we use relative URL so Next.js rewrites can proxy it.
+const API_BASE_URL = typeof window === "undefined" 
+  ? process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000"
+  : "";
 
 /**
  * Helper to fetch data from the API.
@@ -42,7 +45,9 @@ export async function getProducts(filters?: ProductFilters): Promise<PaginatedRe
   const queryString = searchParams.toString();
   const endpoint = queryString ? `/products?${queryString}` : "/products";
   
-  return fetchApi<PaginatedResponse<Product>>(endpoint);
+  return fetchApi<PaginatedResponse<Product>>(endpoint, {
+    next: { tags: ["products"], revalidate: 300 }
+  });
 }
 
 /**
@@ -50,7 +55,9 @@ export async function getProducts(filters?: ProductFilters): Promise<PaginatedRe
  */
 export async function getProductBySlug(slug: string): Promise<{ data: Product } | null> {
   try {
-    return await fetchApi<{ data: Product }>(`/products/${slug}`);
+    return await fetchApi<{ data: Product }>(`/products/${slug}`, {
+      next: { tags: ["products", `product-${slug}`], revalidate: 300 }
+    });
   } catch (error) {
     console.error("Failed to fetch product by slug:", error);
     return null;
@@ -62,9 +69,25 @@ export async function getProductBySlug(slug: string): Promise<{ data: Product } 
  */
 export async function getCategories(): Promise<{ data: Category[] }> {
   try {
-    return await fetchApi<{ data: Category[] }>("/categories");
+    return await fetchApi<{ data: Category[] }>("/categories", {
+      next: { tags: ["categories"], revalidate: 300 }
+    });
   } catch (error) {
     console.error("Failed to fetch categories:", error);
+    return { data: [] };
+  }
+}
+
+/**
+ * Fetch active offers for the home page banner carousel.
+ */
+export async function getOffers(): Promise<{ data: any[] }> {
+  try {
+    return await fetchApi<{ data: any[] }>("/offers", {
+      next: { tags: ["offers"], revalidate: 0 }
+    });
+  } catch (error) {
+    console.error("Failed to fetch offers:", error);
     return { data: [] };
   }
 }

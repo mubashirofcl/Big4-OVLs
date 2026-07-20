@@ -6,8 +6,15 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
+import img1 from "@/public/animation-2/677276fd561b48d392692e32_h-g-image-1-min.png";
+import img2 from "@/public/animation-2/677276fd561b48d392692e34_h-g-image-2-min.png";
+import img3 from "@/public/animation-2/677276fd561b48d392692e35_h-g-image-3-min.png";
+import img4 from "@/public/animation-2/677276fd561b48d392692e33_h-g-image-4-min.png";
+import img5 from "@/public/animation-2/677276fd561b48d392692e31_h-g-image-5-min.png";
+import { StaticImageData } from "next/image";
+
 type GalleryItem = {
-    src: string;
+    src: string | StaticImageData;
     desktop: {
         top: string;
         left?: string;
@@ -28,7 +35,7 @@ export default function ScrollGallery() {
     const images: GalleryItem[] = useMemo(
         () => [
             {
-                src: "/animation-2/677276fd561b48d392692e32_h-g-image-1-min.png",
+                src: img1,
                 desktop: {
                     top: "6%",
                     left: "23%",
@@ -42,7 +49,7 @@ export default function ScrollGallery() {
             },
 
             {
-                src: "/animation-2/677276fd561b48d392692e34_h-g-image-2-min.png",
+                src: img2,
                 desktop: {
                     top: "26%",
                     right: "12%",
@@ -56,7 +63,7 @@ export default function ScrollGallery() {
             },
 
             {
-                src: "/animation-2/677276fd561b48d392692e35_h-g-image-3-min.png",
+                src: img3,
                 desktop: {
                     top: "39%",
                     left: "6%",
@@ -70,7 +77,7 @@ export default function ScrollGallery() {
             },
 
             {
-                src: "/animation-2/677276fd561b48d392692e33_h-g-image-4-min.png",
+                src: img4,
                 desktop: {
                     top: "54%",
                     right: "6%",
@@ -84,7 +91,7 @@ export default function ScrollGallery() {
             },
 
             {
-                src: "/animation-2/677276fd561b48d392692e31_h-g-image-5-min.png",
+                src: img5,
                 desktop: {
                     top: "76%",
                     left: "31%",
