@@ -158,7 +158,7 @@ export default async function ProductsPage({
           </div>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter bgColor="bg-white" textColor="text-black" />
     </div>
   );
 }

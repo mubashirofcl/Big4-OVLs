@@ -1,175 +1,302 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import FullscreenMenu from "@/components/component/Home/FullscreenMenu";
 import Navbar from "@/components/component/Home/Navbar";
+import SiteFooter from "@/components/component/Home/Footer";
 import PageLoader from "@/components/ui/PageLoader";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const brands = [
-    {
-        name: "MODULNOVA",
-        href: "https://www.aristo-group.co.il/brands/modulnova",
-        image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
-    },
-    {
-        name: "MERIDIANI",
-        href: "#",
-        image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&q=80",
-    },
-    {
-        name: "DIANI",
-        href: "#",
-        image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80",
-    },
-    {
-        name: "FIAM",
-        href: "#",
-        image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80",
-    },
-    {
-        name: "SANGIACOMO",
-        href: "#",
-        image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80",
-    },
-    {
-        name: "MOLTENI&C",
-        href: "#",
-        image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80",
-    },
-    {
-        name: "RIMADESIO",
-        href: "#",
-        image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80",
-    },
+const availableImages = [
+  "/44.webp",
+  "/77.webp",
+  "/80.webp",
+  "/81.jpg",
+  "/45.webp",
+  "/46.jpg",
 ];
 
-const filters = [
-    { label: "ALL", icon: null },
-    { label: "WARDROBES", icon: "wardrobe" },
-    { label: "FURNITURE", icon: "furniture" },
-    { label: "APPLIENCES", icon: "appliance" },
+const categories = [
+  "All",
+  "Ceramics & Tiles",
+  "Sanitaryware",
+  "Bath Fittings",
+  "Luxury Bath",
+  "Designer Surfaces",
+  "Building Materials",
+  "Pipes & Fittings",
 ];
+
+const brandData: { name: string; category: string }[] = [
+  { name: "Simpolo", category: "Ceramics & Tiles" },
+  { name: "Italus", category: "Luxury Bath" },
+  { name: "Hindware", category: "Sanitaryware" },
+  { name: "Naveen Ceramics", category: "Ceramics & Tiles" },
+  { name: "Marbito Ceramic", category: "Ceramics & Tiles" },
+  { name: "Somany", category: "Ceramics & Tiles" },
+  { name: "Anjani Tile", category: "Ceramics & Tiles" },
+  { name: "Asian Paints Bathsense", category: "Bath Fittings" },
+  { name: "Johnson", category: "Ceramics & Tiles" },
+  { name: "Vanora", category: "Luxury Bath" },
+  { name: "Jaquar", category: "Bath Fittings" },
+  { name: "Parryware", category: "Sanitaryware" },
+  { name: "Futura", category: "Designer Surfaces" },
+  { name: "Brizzio", category: "Luxury Bath" },
+  { name: "Varmora", category: "Ceramics & Tiles" },
+  { name: "Watercare", category: "Bath Fittings" },
+  { name: "Acebond", category: "Building Materials" },
+  { name: "JK Tile Adhesive", category: "Building Materials" },
+  { name: "Watertec", category: "Bath Fittings" },
+  { name: "Sintex", category: "Sanitaryware" },
+  { name: "Astral Pipes", category: "Pipes & Fittings" },
+  { name: "Ashirvad", category: "Pipes & Fittings" },
+];
+
+const brands = brandData.map((item, index) => ({
+  ...item,
+  image: availableImages[index % availableImages.length],
+}));
 
 export default function OurBrands() {
-    const sectionRef = useRef<HTMLDivElement>(null);
-    const railRef = useRef<HTMLDivElement>(null);
-    const [menuOpen, setMenuOpen] = useState(false);
+  const pageRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const copyRef = useRef<HTMLParagraphElement>(null);
+  const brandsWrapperRef = useRef<HTMLElement>(null);
+  const brandsContainerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const section = sectionRef.current;
-        const rail = railRef.current;
-        if (!section || !rail) return;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("All");
 
-        const ctx = gsap.context(() => {
-            const cards = gsap.utils.toArray<HTMLElement>(".brand-card", rail);
+  const filteredBrands =
+    activeCategory === "All"
+      ? brands
+      : brands.filter((b) => b.category === activeCategory);
 
-            // Scroll-scrubbed effect: cards travel right -> left in place,
-            // tied directly to how far the user has scrolled through the
-            // section (not a one-off play-once entrance). Each card gets a
-            // slightly different starting offset + scrub speed so they don't
-            // all move in lockstep — gives a subtle parallax feel.
-            // The rail itself is still freely swipeable/scrollable by the
-            // user on top of this; the page never gets pinned or hijacked.
-            cards.forEach((card, i) => {
-                const offset = 60 + (i % 3) * 25; // vary starting distance a bit
-                gsap.fromTo(
-                    card,
-                    { x: offset },
-                    {
-                        x: 0,
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: section,
-                            start: "top bottom",   // begins as section enters viewport
-                            end: "bottom top",     // finishes as section leaves viewport
-                            scrub: 1 + (i % 3) * 0.3, // slight stagger in scrub speed
-                        },
-                    }
-                );
-            });
-        }, section);
+  /* ── Hero Entrance Animation ── */
+  useEffect(() => {
+    if (!pageRef.current || !titleRef.current || !copyRef.current) return;
 
-        return () => ctx.revert();
-    }, []);
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
-    return (
-        <>
-            <PageLoader />
-            <div className="bg-white min-h-screen w-full">
-            <style>{`
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
+      tl.fromTo(
+        ".hero-eyebrow",
+        { y: 15, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, delay: 0.8 }
+      )
+        .fromTo(
+          ".title-line",
+          { y: "100%", opacity: 0 },
+          { y: "0%", opacity: 1, duration: 1.0, stagger: 0.15 },
+          "-=0.5"
+        )
+        .fromTo(
+          ".copy-word",
+          { y: 12, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.65, stagger: 0.015, ease: "power2.out" },
+          "-=0.6"
+        )
+        .fromTo(
+          ".hero-cta-btn",
+          { y: 15, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, stagger: 0.1 },
+          "-=0.55"
+        );
+    }, pageRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  /* ── Pinned Horizontal Side-Scroll & Filter Handling ── */
+  useEffect(() => {
+    if (!brandsWrapperRef.current || !brandsContainerRef.current) return;
+
+    const container = brandsContainerRef.current;
+    const wrapper = brandsWrapperRef.current;
+
+    let anim: gsap.core.Tween | null = null;
+
+    // Immediately reset container horizontal offset to start position (x: 0) on filter change
+    gsap.set(container, { x: 0 });
+
+    const timeoutId = setTimeout(() => {
+      const getScrollDistance = () => container.scrollWidth - window.innerWidth;
+      const scrollDistance = getScrollDistance();
+
+      // Only create horizontal pinned scroll if items overflow the screen width
+      if (scrollDistance > 30) {
+        // Calibrated scroll duration for smooth responsive transition to next section
+        const pinDuration = Math.min(scrollDistance * 0.85, 2600);
+
+        anim = gsap.to(container, {
+          x: () => -getScrollDistance(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: wrapper,
+            pin: true,
+            pinSpacing: true,
+            anticipatePin: 1,
+            scrub: 0.5,
+            start: "top top",
+            end: () => `+=${pinDuration}`,
+            invalidateOnRefresh: true,
+          },
+        });
       }
-      .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
+
+      // Smooth entrance stagger for filtered brand cards
+      gsap.fromTo(
+        ".brand-card",
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.45, stagger: 0.05, ease: "power3.out" }
+      );
+
+      ScrollTrigger.refresh();
+    }, 60);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (anim) {
+        if (anim.scrollTrigger) anim.scrollTrigger.kill();
+        anim.kill();
       }
-    `}</style>
+      gsap.set(container, { x: 0 });
+    };
+  }, [activeCategory]);
 
-            <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} theme="light" />
-            <FullscreenMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+  return (
+    <>
+      <PageLoader />
+      <div ref={pageRef} className="min-h-screen w-full bg-white text-[#121212]">
+        <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} theme="light" />
+        <FullscreenMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
-            <section ref={sectionRef} className="relative w-full">
-                {/* Heading */}
-                <div className="pt-28 pb-6 md:pb-10 flex justify-center items-center uppercase">
-                    <h1 className="text-3xl md:text-5xl font-black tracking-tight text-background">
-                        our brands
-                    </h1>
-                </div>
+        {/* ── Hero Section ── */}
+        <section className="px-6 pb-12 pt-40  md:pt-28 lg:pt-40 sm:px-8 max-w-3xl mx-auto text-center flex flex-col items-center justify-center min-h-[45vh]">
+          <p className="hero-eyebrow mb-4 text-[8px] md:text-[10px] font-semibold uppercase tracking-[0.3em] text-[#6f5f4a] whitespace-nowrap">
+            Elite Tiles & Sanitary Ware
+          </p>
+          <h1
+            ref={titleRef}
+            className="text-5xl font-black uppercase leading-[1.05] tracking-tight text-[#121212] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
+          >
+            <span className="block overflow-hidden">
+              <span className="inline-block title-line">Premium Brands,</span>
+            </span>
+            <span className="block overflow-hidden">
+              <span className="inline-block title-line">Elevated.</span>
+            </span>
+          </h1>
+          <p
+            ref={copyRef}
+            className="font-inter mt-4 w-full max-w-xl text-xs leading-5 text-[#4a4a4a] sm:text-xs font-light flex flex-wrap justify-center gap-x-[0.28em] gap-y-0"
+          >
+            {"Discover a deeply curated portfolio of world-class names in tiles, sanitary ware, and bath fittings. Engineered for exceptional spaces, crafted for enduring luxury."
+              .split(" ")
+              .map((word, i) => (
+                <span key={i} className="inline-block overflow-hidden py-0.5">
+                  <span className="inline-block copy-word">{word}</span>
+                </span>
+              ))}
+          </p>
 
-                {/* Brand Rail */}
-                <div
-                    ref={railRef}
-                    className="no-scrollbar w-full overflow-x-auto overflow-y-hidden py-8"
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <a
+              href="#brand-grid"
+              className="hero-cta-btn rounded-full bg-[#121212] px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-[#2b2b2b]"
+            >
+              View collection
+            </a>
+            <Link
+              href="/"
+              className="hero-cta-btn rounded-full border border-[#121212]/20 px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#121212] transition hover:bg-[#121212] hover:text-white"
+            >
+              Back home
+            </Link>
+          </div>
+        </section>
+
+        {/* ── Pinned GSAP Horizontal Scroll Brands Showcase (Mobile & Desktop) ── */}
+        <section
+          ref={brandsWrapperRef}
+          id="brand-grid"
+          className="relative w-full min-h-screen bg-white py-16 flex flex-col justify-center overflow-hidden"
+        >
+          {/* Centered Heading */}
+          <div className="w-full text-center mb-8 px-6">
+            <h2 className="text-4xl font-black uppercase leading-[1.0] tracking-tight text-[#121212] sm:text-5xl lg:text-6xl">
+              Our Brands
+            </h2>
+          </div>
+
+          {/* GSAP Horizontal Track with Left Padding */}
+          <div className="relative flex items-center overflow-hidden w-full">
+            <div
+              ref={brandsContainerRef}
+              className="flex items-start gap-6 sm:gap-8 lg:gap-10 pl-6 sm:pl-12 lg:pl-20 pr-12 lg:pr-24 w-max"
+            >
+              {filteredBrands.map((brand, i) => (
+                <article
+                  key={brand.name + i}
+                  className="brand-card flex-shrink-0 w-[80vw] sm:w-[48vw] md:w-[38vw] lg:w-[30vw] xl:w-[26vw] cursor-pointer group"
                 >
-                    <div className="flex w-max items-start gap-1 md:gap-6 px-1 md:px-6">
-                        {brands.map((brand) => (
-                            <a
-                                key={brand.name}
-                                href={brand.href}
-                                className="brand-card group relative flex-shrink-0 flex flex-col snap-start"
-                                style={{
-                                    width: "clamp(220px,40vw,380px)",
-                                }}
-                            >
-                                <div className="relative w-full aspect-[4/3] overflow-hidden bg-neutral-900">
-                                    <img
-                                        src={brand.image}
-                                        alt={brand.name}
-                                        draggable={false}
-                                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                    />
-                                </div>
+                  {/* Clean 4:3 Landscape Image */}
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#f0ede9]">
+                    <Image
+                      src={brand.image}
+                      alt={brand.name}
+                      fill
+                      priority={i < 4}
+                      sizes="(max-width: 640px) 80vw, (max-width: 1024px) 38vw, 26vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
 
-                                <div className="pt-3">
-                                    <span className="text-xs md:text-lg font-bold uppercase tracking-tight text-background">
-                                        {brand.name}
-                                    </span>
-                                </div>
-                            </a>
-                        ))}
-                    </div>
-                </div>
-            </section>
+                  {/* Brand name and category label under image */}
+                  <div className="mt-4">
+                    <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-[#121212]">
+                      {brand.name}
+                    </h3>
+                    <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9e8c7a]">
+                      {brand.category}
+                    </p>
+                  </div>
+                </article>
+              ))}
 
-            {/* Filter Pills */}
-            <section className="pt-10 pb-10">
-                <div className="flex flex-wrap justify-center gap-2">
-                    {filters.map((filter) => (
-                        <button
-                            key={filter.label}
-                            className="rounded-full border border-background/30 px-2 py-2 text-[8px] md:text-sm font-semibold uppercase transition hover:bg-black text-black hover:text-white"
-                        >
-                            {filter.label}
-                        </button>
-                    ))}
-                </div>
-            </section>
-        </div>
-        </>
-    );
+              {/* Trailing space element to ensure final card is fully visible before unpinning */}
+              <div className="flex-shrink-0 w-12 lg:w-24" aria-hidden="true" />
+            </div>
+          </div>
+
+          {/* Category Filter Pills — left-aligned wrapping chips (matches reference) */}
+          <div className="mt-10 w-full px-6 sm:px-10 lg:px-20">
+            <div className="flex flex-wrap gap-2.5">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`rounded-full px-4 sm:px-5 py-2 text-[10px] sm:text-[10px] font-semibold uppercase tracking-[0.16em] border transition-all duration-200 ${
+                    activeCategory === cat
+                      ? "bg-[#121212] text-white border-[#121212]"
+                      : "bg-white text-[#6f5f4a] border-[#ccc0b0] hover:border-[#121212] hover:text-[#121212]"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Site Footer Component */}
+        <SiteFooter bgColor="bg-white" textColor="text-black" />
+      </div>
+    </>
+  );
 }

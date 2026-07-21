@@ -319,7 +319,7 @@ export default function FullscreenMenu({
 
                     </div>
 
-                    <button
+                    {/* <button
                         className="
             catalog-btn
             mt-12
@@ -341,7 +341,7 @@ export default function FullscreenMenu({
                         onClick={() => setMenuOpen(false)}
                     >
                         <span data-text="CATALOG">CATALOG</span>
-                    </button>
+                    </button> */}
 
                     </div>
                 </div>

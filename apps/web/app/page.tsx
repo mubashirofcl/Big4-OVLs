@@ -55,7 +55,7 @@ export default function Home() {
 
                 <ShowroomSection />
 
-                <SiteFooter />
+                <SiteFooter bgColor="bg-black" textColor="text-white" />
 
             </div>
         </>

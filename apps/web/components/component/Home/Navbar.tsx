@@ -10,23 +10,33 @@ type NavbarProps = {
   menuOpen?: boolean;
   setMenuOpen?: (value: boolean) => void;
   theme?: 'light' | 'dark';
+  bgColor?: string;
+  textColor?: string;
+  className?: string;
 }
 
 export default function Navbar({
   menuOpen,
   setMenuOpen,
-  theme = 'dark'
+  theme = 'dark',
+  bgColor = 'bg-transparent',
+  textColor,
+  className = '',
 }: NavbarProps) {
   const navRef = useRef<HTMLElement>(null);
   const lastScrollY = useRef(0);
   const isHidden = useRef(false);
+
+  // Determine effective text color and light/dark visual style
+  const computedTextColor = textColor || (theme === 'light' ? 'text-black' : 'text-white');
+  const isLightStyle = theme === 'light' || textColor === 'text-black' || textColor?.includes('black');
 
   useEffect(() => {
     if (!navRef.current) return;
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        delay: 1.2, // match your loader
+        delay: 1.2, // match loader
       });
 
       // Navbar fades in
@@ -171,12 +181,15 @@ export default function Navbar({
   }, []);
 
   return (
-    <header ref={navRef} className={`fixed top-0 left-0 z-50 w-full ${theme === 'light' ? 'text-black' : 'text-white'}`}>
+    <header
+      ref={navRef}
+      className={`fixed top-0 left-0 z-50 w-full transition-colors duration-300 ${bgColor} ${computedTextColor} ${className}`}
+    >
       <div className="mx-auto flex h-16 sm:h-20 lg:h-24 items-center justify-between px-6 sm:px-6 lg:px-10 xl:px-16 py-12 lg:py-20">
         {/* Logo */}
         <Link href="/" className="nav-logo">
           <Image
-            src={theme === 'light' ? "/logo2.png" : "/logo1.png"}
+            src={isLightStyle ? "/logo2.png" : "/logo1.png"}
             alt="Logo"
             width={160}
             height={50}
@@ -197,10 +210,6 @@ export default function Navbar({
             </div>
 
             <div className="nav-link">
-              <NavLink title="Brands" href="/brands" />
-            </div>
-
-            <div className="nav-link">
               <NavLink title="Products" href="/products" />
             </div>
 
@@ -210,14 +219,14 @@ export default function Navbar({
 
             <div className="nav-link">
               <Link
-                href="/catalog"
+                href="/brands"
                 className={`inline-flex items-center justify-center cursor-pointer border px-3 py-2 sm:px-5 sm:py-2.5 text-[10px] font-semibold uppercase transition-all duration-300 ease-in-out ${
-                  theme === 'light' 
+                  isLightStyle 
                     ? 'border-black bg-black text-white hover:bg-white hover:text-black hover:border-black' 
                     : 'border-white bg-white text-black hover:bg-black hover:text-white hover:border-white'
                 }`}
               >
-                Catalog
+                Brands
               </Link>
             </div>
           </div>
@@ -228,22 +237,22 @@ export default function Navbar({
               alt="Menu"
               width={42}
               height={42}
-              className={`nav-menu h-10 w-10 cursor-pointer ${theme === 'light' ? 'invert' : ''}`}
-               onClick={() => setMenuOpen?.(true)}
+              className={`nav-menu h-10 w-10 cursor-pointer ${isLightStyle ? 'invert' : ''}`}
+              onClick={() => setMenuOpen?.(true)}
             />
           </div>
         </nav>
 
         {/* Mobile Navigation */}
         <div className="flex w-full justify-between items-center gap-3 sm:gap-5 lg:hidden">
-          <div className="">
+          <div>
             <Link href="/" className="nav-logo">
               <Image
-                src={theme === 'light' ? "/logo2.png" : "/logo1.png"}
+                src={isLightStyle ? "/logo2.png" : "/logo1.png"}
                 alt="Logo"
                 width={160}
                 height={50}
-                className=" h-12 w-auto sm:h-12 lg:h-14 xl:h-14 cursor-pointer"
+                className="h-12 w-auto sm:h-12 lg:h-14 xl:h-14 cursor-pointer"
                 priority
               />
             </Link>
@@ -252,14 +261,14 @@ export default function Navbar({
           <div className="flex items-center gap-4">
             <div className="mobile-btn">
               <Link
-                href="/catalog"
+                href="/brands"
                 className={`inline-flex items-center justify-center cursor-pointer border px-3 py-2 sm:px-5 sm:py-2.5 text-[10px] font-semibold uppercase transition-all duration-300 ease-in-out ${
-                  theme === 'light' 
+                  isLightStyle 
                     ? 'border-black bg-black text-white hover:bg-white hover:text-black hover:border-black' 
                     : 'border-white bg-white text-black hover:bg-black hover:text-white hover:border-white'
                 }`}
               >
-                Catalog
+                Brands
               </Link>
             </div>
 
@@ -268,8 +277,8 @@ export default function Navbar({
               alt="Menu"
               width={40}
               height={40}
-              className={`mobile-menu h-8 w-8 sm:h-10 sm:w-10 cursor-pointer ${theme === 'light' ? 'invert' : ''}`}
-               onClick={() => setMenuOpen?.(true)}
+              className={`mobile-menu h-8 w-8 sm:h-10 sm:w-10 cursor-pointer ${isLightStyle ? 'invert' : ''}`}
+              onClick={() => setMenuOpen?.(true)}
             />
           </div>
         </div>

@@ -5,6 +5,9 @@ import { useState } from "react";
 type SiteFooterProps = {
   brandName?: string;
   year?: number;
+  bgColor?: string;
+  textColor?: string;
+  className?: string;
 };
 
 function NavItem({ label }: { label: string }) {
@@ -57,6 +60,9 @@ function NavItem({ label }: { label: string }) {
 export default function SiteFooter({
   brandName = "BIG4",
   year = new Date().getFullYear(),
+  bgColor = "bg-background",
+  textColor = "text-foreground",
+  className = "",
 }: SiteFooterProps) {
   const [lang, setLang] = useState<"EN" | "HE">("EN");
 
@@ -76,7 +82,7 @@ export default function SiteFooter({
   ];
 
   return (
-    <footer className="relative overflow-hidden text-foreground bg-background">
+    <footer className={`relative overflow-hidden transition-colors duration-300 ${bgColor} ${textColor} ${className}`}>
       {/* ================= MOBILE ================= */}
 
       <div className="flex flex-col justify-between gap-16 px-6 py-8 lg:hidden">
@@ -98,11 +104,10 @@ export default function SiteFooter({
                 justify-center
                 rounded-full
                 border
-                border-foreground
+                border-current
                 transition-all
                 duration-300
-                hover:bg-foreground
-                hover:text-background
+                hover:opacity-80
                 hover:rotate-90
               "
             >
@@ -150,18 +155,17 @@ export default function SiteFooter({
                   justify-center
                   rounded-full
                   border
-                  border-foreground
+                  border-current
                   transition-all
                   duration-300
-                  hover:bg-foreground
-                  hover:text-background
+                  hover:opacity-80
                   hover:rotate-90
                 "
               >
                 ↑
               </button>
 
-              <span className="text-xs">
+              <span className="text-xs font-semibold">
                 {brandName}® {year}
               </span>
             </div>

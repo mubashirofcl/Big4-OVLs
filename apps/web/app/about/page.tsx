@@ -26,7 +26,7 @@ export default function ABoutPage() {
                     <Experinces />
                     <TimelineGallery />
                     <Exper />
-                    <SiteFooter />
+                    <SiteFooter bgColor="bg-[#1e1f22]" textColor="text-white" />
                 </div>
             </div>
         </>
