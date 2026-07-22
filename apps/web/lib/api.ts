@@ -1,3 +1,4 @@
+/** Storefront Direct Database Data Fetching API */
 import { Category, PaginatedResponse, Product, ProductFilters } from "@/types/product";
 import { prisma } from "@/lib/prisma";
 
