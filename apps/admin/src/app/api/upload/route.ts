@@ -69,9 +69,9 @@ export async function POST(req: NextRequest) {
         // Upload to Cloudinary
         const result = await uploadImage(file);
 
-        if (!result) {
+        if (!result.success) {
             return Response.json(
-                { success: false, message: "Upload failed. Please try again.", data: null },
+                { success: false, message: result.error, data: null },
                 { status: 500 }
             );
         }

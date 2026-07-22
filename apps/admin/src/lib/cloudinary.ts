@@ -31,7 +31,7 @@ async function generateSignature(params: Record<string, string>): Promise<string
  * @param file - The File or Blob to upload
  * @returns The secure URL of the uploaded image, or null on failure
  */
-export async function uploadImage(file: File): Promise<{ url: string; publicId: string } | null> {
+export async function uploadImage(file: File): Promise<{ success: true; url: string; publicId: string } | { success: false; error: string }> {
     try {
         const timestamp = Math.floor(Date.now() / 1000).toString();
         const folder = "big4-products";
@@ -58,17 +58,25 @@ export async function uploadImage(file: File): Promise<{ url: string; publicId: 
         if (!response.ok) {
             const errorBody = await response.text();
             console.error("Cloudinary upload failed:", errorBody);
-            return null;
+            let message = "Cloudinary upload failed";
+            try {
+                const parsed = JSON.parse(errorBody);
+                if (parsed.error?.message) {
+                    message = `Cloudinary: ${parsed.error.message}`;
+                }
+            } catch {}
+            return { success: false, error: message };
         }
 
         const data = await response.json();
         return {
+            success: true,
             url: data.secure_url as string,
             publicId: data.public_id as string,
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error("Cloudinary upload error:", error);
-        return null;
+        return { success: false, error: error?.message || "Cloudinary connection error" };
     }
 }
 
