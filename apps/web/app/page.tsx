@@ -14,6 +14,9 @@ import SiteFooter from "@/components/component/Home/Footer";
 import ThreeDComponent from "@/components/ThreeDComponent";
 import PageLoader from "@/components/ui/PageLoader";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function Home() {
     const { data: offers } = await getOffers();
 

@@ -204,23 +204,25 @@ export async function getOffers(): Promise<{ data: Offer[] }> {
     const rawOffers = await prisma.offer.findMany({
       where: {
         isActive: true,
-        OR: [
-          { startDate: null },
-          { startDate: { lte: now } }
-        ],
-        AND: [
-          {
-            OR: [
-              { endDate: null },
-              { endDate: { gte: now } }
-            ]
-          }
-        ]
       },
       orderBy: { displayOrder: "asc" },
     });
 
-    return { data: rawOffers };
+    const activeOffers = rawOffers.filter((offer) => {
+      if (offer.endDate && new Date(offer.endDate) < now) {
+        return false;
+      }
+      if (offer.startDate) {
+        const start = new Date(offer.startDate);
+        // Allow a 24-hour buffer for start date to account for timezone differences (e.g. UTC vs IST)
+        if (start.getTime() > now.getTime() + 24 * 60 * 60 * 1000) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    return { data: activeOffers };
   } catch (error) {
     console.error("Failed to fetch offers from DB:", error);
     return { data: [] };
