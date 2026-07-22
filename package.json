@@ -9,6 +9,7 @@
     "lint": "turbo run lint"
   },
   "dependencies": {
+    "@swc/helpers": "^0.5.23",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.42.2",
