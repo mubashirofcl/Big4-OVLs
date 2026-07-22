@@ -11,7 +11,27 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 4000;
 
-app.use(cors());
+const allowedOrigins = [
+  "https://big4.co.in",
+  "https://www.big4.co.in",
+  process.env.STOREFRONT_URL,
+  process.env.ADMIN_URL,
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://localhost:4000",
+].filter(Boolean) as string[];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
-
+import { siteConfig } from "@/lib/config/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -10,12 +10,22 @@ const inter = Inter({
   display: "swap",
 });
 
-import { siteConfig } from "@/lib/config/site";
-
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.website),
   title: siteConfig.seo.title,
   description: siteConfig.seo.description,
   keywords: siteConfig.seo.keywords,
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
+  alternates: {
+    canonical: "./",
+  },
   openGraph: {
     title: siteConfig.seo.title,
     description: siteConfig.seo.description,
@@ -23,6 +33,20 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     locale: "en_IN",
     type: "website",
+    images: [
+      {
+        url: "/images/schema/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Big4 Tiles & Sanitary Showroom Sullia",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.seo.title,
+    description: siteConfig.seo.description,
+    images: ["/images/schema/og-image.jpg"],
   },
 };
 
@@ -31,6 +55,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const storeImageUrl = `${siteConfig.website.replace(/\/$/, "")}/images/schema/schema-store.jpg`;
+
   return (
     <html lang="en" className={cn(inter.variable, "dark")}>
       <body className="min-h-full flex flex-col">
@@ -39,26 +65,41 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "LocalBusiness",
-              "name": siteConfig.legalName,
-              "image": "", 
+              "@type": ["HomeGoodsStore", "Store"],
+              "name": "Big4 Tiles & Sanitary",
+              "image": storeImageUrl,
               "@id": siteConfig.website,
               "url": siteConfig.website,
-              "telephone": siteConfig.contact.phone,
+              "telephone": "+91 93539 20365",
+              "priceRange": "$$",
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 12.5574228,
+                "longitude": 75.3932359
+              },
               "address": {
                 "@type": "PostalAddress",
-                "streetAddress": `${siteConfig.address.building}, ${siteConfig.address.landmark}, ${siteConfig.address.area}`,
-                "addressLocality": siteConfig.address.city,
-                "addressRegion": siteConfig.address.state,
-                "postalCode": siteConfig.address.postalCode,
+                "streetAddress": "H95V+467 Sarah Commercial Complex, Mangalore - Mysore Hwy, opp. KSRTC Bus Stand, Jattipalla",
+                "addressLocality": "Sullia",
+                "addressRegion": "Karnataka",
+                "postalCode": "574239",
                 "addressCountry": "IN"
               },
-              "openingHoursSpecification": siteConfig.businessHours.map((bh) => ({
-                "@type": "OpeningHoursSpecification",
-                "dayOfWeek": bh.days.includes("-") ? bh.days.split(" - ").map(d => d.trim()) : bh.days,
-                "opens": bh.hours.includes("Closed") ? "00:00" : "10:00",
-                "closes": bh.hours.includes("Closed") ? "00:00" : "19:00"
-              }))
+              "openingHoursSpecification": [
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday"
+                  ],
+                  "opens": "10:00",
+                  "closes": "19:00"
+                }
+              ]
             })
           }}
         />
@@ -67,3 +108,4 @@ export default function RootLayout({
     </html>
   );
 }
+

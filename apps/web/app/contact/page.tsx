@@ -1,22 +1,25 @@
-"use client";
+import type { Metadata } from "next";
+import ContactClient from "./ContactClient";
+import { siteConfig } from "@/lib/config/site";
 
-import { useState } from "react";
-import ContactForm from "@/components/component/Contact/ContactForm";
-import FullscreenMenu from "@/components/component/Home/FullscreenMenu";
-import Navbar from "@/components/component/Home/Navbar";
-import SiteFooter from "@/components/component/Home/Footer";
-import PageLoader from "@/components/ui/PageLoader";
+export const metadata: Metadata = {
+  title: "Visit Our Showroom in Sullia | Big4 Tiles & Sanitary",
+  description:
+    "Contact Big4 Tiles & Sanitary in Jattipalla, Sullia (Opp. KSRTC Bus Stand). Call +91 93539 20365 or visit our showroom for expert tile & sanitary consultation in Dakshina Kannada.",
+  alternates: {
+    canonical: `${siteConfig.website}/contact`,
+  },
+  openGraph: {
+    title: "Visit Our Showroom in Sullia | Big4 Tiles & Sanitary",
+    description:
+      "Contact Big4 Tiles & Sanitary in Jattipalla, Sullia (Opp. KSRTC Bus Stand). Call +91 93539 20365 or visit our showroom for expert tile & sanitary consultation in Dakshina Kannada.",
+    url: `${siteConfig.website}/contact`,
+    siteName: siteConfig.name,
+    locale: "en_IN",
+    type: "website",
+  },
+};
 
 export default function ContactPage() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  return (
-    <div className="bg-black min-h-screen text-white">
-      <PageLoader />
-      <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <FullscreenMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <ContactForm />
-      <SiteFooter bgColor="bg-black" textColor="text-white" />
-    </div>
-  );
+  return <ContactClient />;
 }

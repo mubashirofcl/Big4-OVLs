@@ -60,6 +60,7 @@ export function ProductHero() {
         <span className="block overflow-hidden pb-2">
           <span className="inline-block title-line">Unveiled.</span>
         </span>
+        <span className="sr-only">Tiles & Sanitaryware Catalog — Big4 Sullia</span>
       </h1>
       <p
         ref={copyRef}

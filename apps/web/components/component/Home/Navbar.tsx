@@ -189,14 +189,14 @@ export default function Navbar({
         {/* Logo */}
         <Link href="/" className="nav-logo">
           <Image
-            src={isLightStyle ? "/logo2.png" : "/logo1.png"}
+            src={isLightStyle ? "/images/branding/logo2.png" : "/images/branding/logo1.png"}
             alt="Logo"
-            width={160}
-            height={50}
+            width={220}
+            height={70}
             className={`hidden lg:flex w-auto cursor-pointer ${
               isLightStyle 
-                ? "h-20 sm:h-20 lg:h-24 xl:h-24" 
-                : "h-9 sm:h-9 lg:h-11 xl:h-11"
+                ? "h-20 sm:h-22 lg:h-24 xl:h-26" 
+                : "h-12 sm:h-14 lg:h-16 xl:h-16"
             }`}
             priority
           />
@@ -237,7 +237,7 @@ export default function Navbar({
 
           <div className="ml-14 flex items-center">
             <Image
-              src="/677276fd561b48d392692df4_burger-icon.svg"
+              src="/images/icons/burger-icon.svg"
               alt="Menu"
               width={42}
               height={42}
@@ -252,14 +252,14 @@ export default function Navbar({
           <div>
             <Link href="/" className="nav-logo">
               <Image
-                src={isLightStyle ? "/logo2.png" : "/logo1.png"}
+                src={isLightStyle ? "/images/branding/logo2.png" : "/images/branding/logo1.png"}
                 alt="Logo"
-                width={160}
-                height={50}
+                width={220}
+                height={70}
                 className={`w-auto cursor-pointer ${
                   isLightStyle 
-                    ? "h-20 sm:h-20 lg:h-24 xl:h-24" 
-                    : "h-9 sm:h-9 lg:h-11 xl:h-11"
+                    ? "h-20 sm:h-22 lg:h-24 xl:h-26" 
+                    : "h-12 sm:h-14 lg:h-16 xl:h-16"
                 }`}
                 priority
               />
@@ -281,7 +281,7 @@ export default function Navbar({
             </div>
 
             <Image
-              src="/677276fd561b48d392692df4_burger-icon.svg"
+              src="/images/icons/burger-icon.svg"
               alt="Menu"
               width={40}
               height={40}

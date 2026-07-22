@@ -8,11 +8,21 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const categorySlugMap: Record<string, string> = {
+  "Tiles": "tiles",
+  "Sanitary": "sanitaryware",
+  "Bathrooms": "bathrooms",
+  "Interior work": "interior-work",
+  "Kitchen": "kitchen",
+  "Fittings": "fittings",
+  "Closets": "closets",
+  "Gum": "adhesives",
+  "Pipes": "pipes",
+};
+
 const rows = [
   ["Tiles", "Sanitary", "Bathrooms", "Interior work"],
-
-  ["Kitchen", "Fittings", "Closets","Gum"],
-
+  ["Kitchen", "Fittings", "Closets", "Gum"],
   ["Pipes"],
 ];
 
@@ -67,7 +77,7 @@ export default function Categories() {
             >
               {row.map((item) => (
                 <Link
-                  href={`/products?search=${encodeURIComponent(item)}`}
+                  href={`/products?category=${encodeURIComponent(categorySlugMap[item] || item.toLowerCase())}`}
                   key={item}
                   className="
                     group

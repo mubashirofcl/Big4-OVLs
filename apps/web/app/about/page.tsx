@@ -1,34 +1,25 @@
-"use client";
+import type { Metadata } from "next";
+import AboutClient from "./AboutClient";
+import { siteConfig } from "@/lib/config/site";
 
-import { useState } from "react";
-import Exper from "@/components/component/About/Exper";
-import Experinces from "@/components/component/About/Experince";
-import Hero from "@/components/component/About/Hero";
-import TimelineGallery from "@/components/component/About/TimelineGallery";
-import SiteFooter from "@/components/component/Home/Footer";
-import FullscreenMenu from "@/components/component/Home/FullscreenMenu";
-import Navbar from "@/components/component/Home/Navbar";
-import PageLoader from "@/components/ui/PageLoader";
+export const metadata: Metadata = {
+  title: "About Us | Big4 Tiles & Sanitary Showroom in Sullia",
+  description:
+    "Learn about Big4 Tiles & Sanitary in Sullia. Delivering top-tier tiles, sanitaryware, and interior fitting solutions across Dakshina Kannada since 2017.",
+  alternates: {
+    canonical: `${siteConfig.website}/about`,
+  },
+  openGraph: {
+    title: "About Us | Big4 Tiles & Sanitary Showroom in Sullia",
+    description:
+      "Learn about Big4 Tiles & Sanitary in Sullia. Delivering top-tier tiles, sanitaryware, and interior fitting solutions across Dakshina Kannada since 2017.",
+    url: `${siteConfig.website}/about`,
+    siteName: siteConfig.name,
+    locale: "en_IN",
+    type: "website",
+  },
+};
 
-
-
-export default function ABoutPage() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  return (
-    <>
-      <PageLoader />
-      <div className="">
-        <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-        <FullscreenMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-        <div className="bg-black min-w-screen min-h-screen">
-          <Hero />
-          <Experinces />
-          <TimelineGallery />
-          <Exper />
-          <SiteFooter bgColor="bg-black" textColor="text-white" />
-        </div>
-      </div>
-    </>
-  );
+export default function AboutPage() {
+  return <AboutClient />;
 }

@@ -239,11 +239,11 @@ export default function FullscreenMenu({
 
                     <Link href="/" className="menu-logo">
                         <Image
-                            src="/logo2.png"
+                            src="/images/branding/logo2.png"
                             alt="Logo"
-                            width={160}
-                            height={50}
-                            className="h-10 w-auto sm:h-12 lg:h-14 xl:h-14 cursor-pointer"
+                            width={220}
+                            height={70}
+                            className="h-14 sm:h-18 lg:h-20 xl:h-22 w-auto cursor-pointer"
                             priority
                         />
                     </Link>
@@ -260,7 +260,7 @@ export default function FullscreenMenu({
 
                 <div className="flex-1 flex flex-col items-center justify-center w-full">
                     <div className="flex flex-col items-center justify-center w-full py-4 text-black font-black">
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center space-y-3 sm:space-y-4 md:space-y-6">
 
                         {/* HOME */}
                         <Link href="/" onClick={() => setMenuOpen(false)} className="menu-item overflow-hidden cursor-pointer" onMouseEnter={handleItemEnter} onMouseLeave={handleItemLeave}>

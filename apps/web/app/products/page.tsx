@@ -18,10 +18,22 @@ import {
 import Navbar from "@/components/component/Home/Navbar";
 import SiteFooter from "@/components/component/Home/Footer";
 import FadeIn from "@/components/animations/FadeIn";
+import { siteConfig } from "@/lib/config/site";
 
 export const metadata = {
-  title: "Products | Big4 Tiles & Sanitary",
-  description: "Browse our extensive catalog of premium tiles and sanitaryware.",
+  title: "Tiles & Sanitaryware Catalog — Big4 Sullia",
+  description: "Browse our full catalog of floor tiles, wall tiles, sanitaryware, and bath fittings. Visit Big4 Tiles & Sanitary in Sullia to view physical samples.",
+  alternates: {
+    canonical: `${siteConfig.website}/products`,
+  },
+  openGraph: {
+    title: "Tiles & Sanitaryware Catalog — Big4 Sullia",
+    description: "Browse our full catalog of floor tiles, wall tiles, sanitaryware, and bath fittings. Visit Big4 Tiles & Sanitary in Sullia to view physical samples.",
+    url: `${siteConfig.website}/products`,
+    siteName: siteConfig.name,
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 export default async function ProductsPage({

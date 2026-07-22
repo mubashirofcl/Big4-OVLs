@@ -4,13 +4,13 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
-import spin1 from "@/public/spinHero/spin1.png";
-import spin2 from "@/public/spinHero/spin2.png";
-import spin3 from "@/public/spinHero/spin3.png";
-import spin4 from "@/public/spinHero/spin4.png";
-import spin5 from "@/public/spinHero/spin5.png";
-import spin6 from "@/public/spinHero/spin6.png";
-import spin7 from "@/public/spinHero/spin7.png";
+import spin1 from "@/public/images/hero/spinHero/spin1.png";
+import spin2 from "@/public/images/hero/spinHero/spin2.png";
+import spin3 from "@/public/images/hero/spinHero/spin3.png";
+import spin4 from "@/public/images/hero/spinHero/spin4.png";
+import spin5 from "@/public/images/hero/spinHero/spin5.png";
+import spin6 from "@/public/images/hero/spinHero/spin6.png";
+import spin7 from "@/public/images/hero/spinHero/spin7.png";
 
 const images = [spin1, spin2, spin3, spin4, spin5, spin6, spin7];
 
@@ -103,7 +103,7 @@ export default function Hero() {
       >
         <Image
           src={images[index]}
-          alt=""
+          alt="Big4 Tiles & Sanitary showroom interior — Sullia"
           width={500}
           height={500}
           priority
@@ -152,6 +152,7 @@ export default function Hero() {
           <div className="overflow-hidden">
             <div ref={line2Ref}>Experience</div>
           </div>
+          <span className="sr-only">Big4 Tiles & Sanitaryware Showroom — Sullia, Dakshina Kannada</span>
         </h1>
 
       </div>

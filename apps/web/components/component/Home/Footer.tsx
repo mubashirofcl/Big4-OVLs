@@ -131,9 +131,9 @@ export default function SiteFooter({
         </div>
 
         <div>
-          <h1 className="text-[24vw] font-black leading-none">
+          <div className="text-[24vw] font-black leading-none">
             {brandName}
-          </h1>
+          </div>
 
           <span className="text-xs">
             {brandName}® {year}
@@ -145,9 +145,9 @@ export default function SiteFooter({
 
       <div className="hidden items-center justify-between px-12 py-12 lg:flex">
         <div>
-          <h1 className="text-[11vw] font-black leading-none">
+          <div className="text-[11vw] font-black leading-none">
             {brandName}
-          </h1>
+          </div>
         </div>
 
         <div className="flex flex-col items-end justify-between">

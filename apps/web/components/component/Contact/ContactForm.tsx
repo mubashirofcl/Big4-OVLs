@@ -25,6 +25,7 @@ type FormState = {
 ───────────────────────────────────────────── */
 
 function InputField({
+  id,
   label,
   type = "text",
   placeholder,
@@ -33,6 +34,7 @@ function InputField({
   required,
   icon,
 }: {
+  id: string;
   label: string;
   type?: string;
   placeholder: string;
@@ -44,7 +46,7 @@ function InputField({
   const [focused, setFocused] = useState(false);
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="font-inter uppercase tracking-[0.2em] text-[8px] font-semibold text-[#555]">
+      <label htmlFor={id} className="font-inter uppercase tracking-[0.2em] text-[8px] font-semibold text-[#555]">
         {label}
       </label>
       <div
@@ -56,6 +58,7 @@ function InputField({
           <span className="pl-3 text-[#333]">{icon}</span>
         )}
         <input
+          id={id}
           required={required}
           type={type}
           placeholder={placeholder}
@@ -494,6 +497,7 @@ export default function ContactForm() {
                   {/* row 1: name + email */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
+                      id="full-name"
                       label="Full Name"
                       placeholder="Your Name"
                       value={form.name}
@@ -501,6 +505,7 @@ export default function ContactForm() {
                       required
                     />
                     <InputField
+                      id="email-address"
                       label="Email Address"
                       type="email"
                       placeholder="you@example.com"
@@ -513,6 +518,7 @@ export default function ContactForm() {
                   {/* row 2: phone + interest */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
+                      id="phone-number"
                       label="Phone / WhatsApp"
                       type="tel"
                       placeholder="+91 XXXXX XXXXX"
@@ -520,10 +526,11 @@ export default function ContactForm() {
                       onChange={set("phone")}
                     />
                     <div className="flex flex-col gap-1.5">
-                      <label className="font-inter uppercase tracking-[0.2em] text-[8px] font-semibold text-[#555]">
+                      <label htmlFor="interest-select" className="font-inter uppercase tracking-[0.2em] text-[8px] font-semibold text-[#555]">
                         I&apos;m Interested In
                       </label>
                       <select
+                        id="interest-select"
                         value={form.interest}
                         onChange={(e) => set("interest")(e.target.value)}
                         className="font-inter w-full bg-[#0d0d0d] border border-[#1e1e1e] focus:border-white rounded-sm py-2.5 px-3 text-xs text-white outline-none transition-colors duration-300 cursor-pointer"
@@ -540,10 +547,11 @@ export default function ContactForm() {
 
                   {/* message */}
                   <div className="flex flex-col gap-1.5 mt-1">
-                    <label className="font-inter uppercase tracking-[0.2em] text-[8px] font-semibold text-[#555]">
+                    <label htmlFor="project-details" className="font-inter uppercase tracking-[0.2em] text-[8px] font-semibold text-[#555]">
                       Project Details
                     </label>
                     <textarea
+                      id="project-details"
                       required
                       rows={4}
                       placeholder="Briefly describe your vision, space requirements, and timeline…"

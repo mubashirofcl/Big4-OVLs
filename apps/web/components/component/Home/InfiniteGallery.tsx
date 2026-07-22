@@ -5,10 +5,10 @@ import Image from "next/image";
 import gsap from "gsap";
 
 const images = [
-  "/animation/1.webp",
-  "/animation/2.webp",
-  "/animation/3.webp",
-  "/animation/5.webp",
+  "/images/hero/animation/1.webp",
+  "/images/hero/animation/2.webp",
+  "/images/hero/animation/3.webp",
+  "/images/hero/animation/5.webp",
 ];
 
 export default function InfiniteGallery() {

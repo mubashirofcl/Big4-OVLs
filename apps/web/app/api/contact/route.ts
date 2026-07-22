@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const adminUrl = process.env.ADMIN_URL || "http://localhost:3000";
+    const adminUrl = process.env.ADMIN_URL || (process.env.NODE_ENV === "production" ? "https://big4.co.in" : "http://localhost:3000");
     try {
       await fetch(`${adminUrl}/api/leads`, {
         method: "POST",

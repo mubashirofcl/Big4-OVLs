@@ -10,7 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 import { siteConfig } from "@/lib/config/site";
 
 const showroom = {
-  images: ["/1.png"],
+  images: ["/images/hero/1.png"],
   mapUrl: siteConfig.googleMapsEmbed,
   title: `${siteConfig.name} Experience Center`,
   city: siteConfig.address.city,

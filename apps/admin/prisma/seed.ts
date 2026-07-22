@@ -57,9 +57,9 @@ const BRANDS = [
 ];
 
 async function seedAdmin() {
-    const adminEmail = "admin@big4.com";
-    const adminPassword = "B!g4@Adm1n#2024Sec";
-    const adminName = "Super Admin";
+    const adminEmail = "big4tiles@gmail.com";
+    const adminPassword = "Admin@big4";
+    const adminName = "BIG4 Admin";
 
     const existingAdmin = await prisma.user.findUnique({
         where: { email: adminEmail },

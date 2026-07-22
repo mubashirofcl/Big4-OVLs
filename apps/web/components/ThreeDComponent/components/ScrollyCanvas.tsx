@@ -17,7 +17,7 @@ export default function ScrollyCanvas({ heroRef }: { heroRef: React.RefObject<HT
     // Check if mobile on mount
     const isMobile = window.innerWidth < 768;
     const frameCount = 151; // Both sequence and sequence2 have 151 frames
-    const folder = isMobile ? 'sequence2' : 'sequence';
+    const folder = isMobile ? 'images/sequence2' : 'images/sequence';
 
     let loaded = 0;
     const loadedImages: HTMLImageElement[] = [];

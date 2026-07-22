@@ -63,7 +63,7 @@ export default function OfferCarousel() {
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8">
         <div className="w-full relative overflow-hidden group rounded-2xl shadow-2xl bg-black" ref={emblaRef}>
       <div className="flex touch-pan-y">
-        {offers.map((offer) => {
+        {offers.map((offer, index) => {
           let href = "#";
           
           if (offer.linkType === "PRODUCT") {
@@ -76,6 +76,8 @@ export default function OfferCarousel() {
             href = siteConfig.contact.whatsappLink;
           }
 
+          const isFirstSlide = index === 0;
+
           const slideContent = (
             <div className="relative w-full flex flex-col md:block group">
               {/* Image Container */}
@@ -85,7 +87,7 @@ export default function OfferCarousel() {
                   src={offer.bannerImage}
                   alt={offer.title}
                   fill
-                  priority
+                  priority={isFirstSlide}
                   className={`object-cover ${offer.bannerImageMobile ? "hidden md:block" : "hidden md:block"}`}
                   sizes="(max-width: 768px) 100vw, 100vw"
                 />
@@ -96,7 +98,7 @@ export default function OfferCarousel() {
                     src={offer.bannerImageMobile}
                     alt={offer.title}
                     fill
-                    priority
+                    priority={isFirstSlide}
                     className="object-cover md:hidden"
                     sizes="(max-width: 768px) 100vw, 100vw"
                   />
@@ -106,14 +108,14 @@ export default function OfferCarousel() {
                       src={offer.bannerImage}
                       alt={`${offer.title} background`}
                       fill
-                      priority
+                      priority={isFirstSlide}
                       className="object-cover md:hidden blur-xl scale-110 opacity-50"
                     />
                     <Image
                       src={offer.bannerImage}
                       alt={offer.title}
                       fill
-                      priority
+                      priority={isFirstSlide}
                       className="object-contain md:hidden relative z-0"
                       sizes="(max-width: 768px) 100vw, 100vw"
                     />

@@ -13,19 +13,19 @@ const sections = [
   {
     step: "01",
     title: "INSPIRE",
-    src: "/44.webp",
+    src: "/images/products/44.webp",
     copy: "Handpicked surface and bath collections combining timeless architectural design with modern craftsmanship.",
   },
   {
     step: "02",
     title: "SELECT",
-    src: "/45.webp",
+    src: "/images/products/45.webp",
     copy: "Expert guidance to help choose materials tailored to your aesthetic, project specifications, and budget.",
   },
   {
     step: "03",
     title: "COMPLETE",
-    src: "/46.jpg",
+    src: "/images/products/46.jpg",
     copy: "End-to-end service from personalized consultation and product selection to reliable delivery and support.",
   },
 ];

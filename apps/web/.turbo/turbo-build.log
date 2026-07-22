@@ -2,3 +2,46 @@ $ next build
 ▲ Next.js 16.2.10 (Turbopack)
 
   Creating an optimized production build ...
+✓ Compiled successfully in 8.3s
+  Running TypeScript ...
+  Finished TypeScript in 8.0s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/14) ...
+  Generating static pages using 11 workers (3/14) 
+  Generating static pages using 11 workers (6/14) 
+Failed to fetch featured products: Error: Dynamic server usage: Route / couldn't be rendered statically because it used revalidate: 0 fetch https://big4.co.in/api/products/featured /. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at v (C:\Users\ADMIN\OneDrive\Desktop\Big4 OVLs\Big4-OVLs\apps\web\.next\server\chunks\ssr\[root-of-the-server]__0gvqzic._.js:8:82316)
+    at <unknown> (C:\Users\ADMIN\OneDrive\Desktop\Big4 OVLs\Big4-OVLs\apps\web\.next\server\chunks\ssr\[root-of-the-server]__0gvqzic._.js:17:13440)
+    at <unknown> (C:\Users\ADMIN\OneDrive\Desktop\Big4 OVLs\Big4-OVLs\apps\web\.next\server\chunks\ssr\[root-of-the-server]__0gvqzic._.js:1:30947)
+    at <unknown> (C:\Users\ADMIN\OneDrive\Desktop\Big4 OVLs\Big4-OVLs\apps\web\.next\server\chunks\ssr\[root-of-the-server]__0gvqzic._.js:1:30475) {
+  description: "Route / couldn't be rendered statically because it used revalidate: 0 fetch https://big4.co.in/api/products/featured /. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+  Generating static pages using 11 workers (10/14) 
+Failed to fetch categories: Error: API error: 404 Not Found
+    at b (C:\Users\ADMIN\OneDrive\Desktop\Big4 OVLs\Big4-OVLs\apps\web\.next\server\chunks\[root-of-the-server]__16-dzbm._.js:16:677)
+    at async S (C:\Users\ADMIN\OneDrive\Desktop\Big4 OVLs\Big4-OVLs\apps\web\.next\server\chunks\[root-of-the-server]__16-dzbm._.js:16:997)
+    at async _ (C:\Users\ADMIN\OneDrive\Desktop\Big4 OVLs\Big4-OVLs\apps\web\.next\server\chunks\[root-of-the-server]__16-dzbm._.js:16:1879)
+    at async C (C:\Users\ADMIN\OneDrive\Desktop\Big4 OVLs\Big4-OVLs\apps\web\.next\server\chunks\[root-of-the-server]__16-dzbm._.js:16:2214)
+✓ Generating static pages using 11 workers (14/14) in 5.0s
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ○ /about
+├ ƒ /api/contact
+├ ƒ /api/revalidate
+├ ○ /apple-icon.png
+├ ○ /brands
+├ ○ /contact
+├ ○ /icon.png
+├ ƒ /products
+├ ƒ /products/[slug]
+├ ○ /robots.txt
+└ ƒ /sitemap.xml
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

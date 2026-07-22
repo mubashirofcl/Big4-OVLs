@@ -20,6 +20,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+import { siteConfig } from "@/lib/config/site";
+
 type Props = {
   params: Promise<{ slug: string }>;
 };
@@ -27,14 +29,35 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   const response = await getProductBySlug(resolvedParams.slug);
-  if (!response) return { title: "Product Not Found" };
+  if (!response) return { title: "Product Not Found | Big4 Tiles & Sanitary" };
 
   const product = response.data;
+  const canonicalUrl = `${siteConfig.website}/products/${product.slug}`;
+  const title = `${product.name} | Big4 Tiles & Sanitary, Sullia`;
+  const description =
+    product.description ||
+    `Explore ${product.name}${product.brand ? ` by ${product.brand}` : ""} at Big4 Tiles & Sanitary showroom in Sullia, Dakshina Kannada. Get instant quotes & WhatsApp support.`;
+
   return {
-    title: `${product.name} | Big4 Tiles & Sanitary`,
-    description: product.description || `Buy ${product.name} at Big4 Tiles & Sanitary.`,
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
-      images: product.imageUrl ? [product.imageUrl] : [],
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: siteConfig.name,
+      locale: "en_IN",
+      type: "website",
+      images: product.imageUrl ? [{ url: product.imageUrl, alt: product.name }] : [{ url: "/images/schema/og-image.jpg" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: product.imageUrl ? [product.imageUrl] : ["/images/schema/og-image.jpg"],
     },
   };
 }
@@ -57,7 +80,7 @@ export default async function ProductDetailsPage({ params }: Props) {
     "@type": "Product",
     name: product.name,
     image: product.imageUrl,
-    description: product.description,
+    description: product.description || `${product.name} available at Big4 Tiles & Sanitary showroom in Sullia.`,
     sku: product.sku,
     brand: product.brand ? { "@type": "Brand", name: product.brand } : undefined,
     offers: {
@@ -65,10 +88,45 @@ export default async function ProductDetailsPage({ params }: Props) {
       priceCurrency: "INR",
       price: effectivePrice,
       availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      seller: {
+        "@type": "HomeGoodsStore",
+        name: "Big4 Tiles & Sanitary",
+      },
     },
     ...(product.material && { material: product.material }),
     ...(product.color && { color: product.color }),
     ...(product.size && { size: product.size }),
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteConfig.website,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Products",
+        item: `${siteConfig.website}/products`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.category.name,
+        item: `${siteConfig.website}/products?category=${encodeURIComponent(product.category.slug)}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: product.name,
+        item: `${siteConfig.website}/products/${product.slug}`,
+      },
+    ],
   };
 
   return (
@@ -78,6 +136,10 @@ export default async function ProductDetailsPage({ params }: Props) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
         />
         
         <div className="max-w-[1400px] mx-auto px-6 sm:px-10 xl:px-16">

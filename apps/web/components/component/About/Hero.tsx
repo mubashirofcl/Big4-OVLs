@@ -97,7 +97,7 @@ export default function Hero() {
       <div ref={bgParallaxRef} className="absolute inset-0 z-0 h-[120%] -top-[10%] opacity-25 pointer-events-none">
         <div ref={bgImageRef} className="relative w-full h-full">
           <Image
-            src="/45.webp"
+            src="/images/products/45.webp"
             alt="Luxury Tile Texture"
             fill
             priority

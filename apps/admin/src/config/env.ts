@@ -15,11 +15,11 @@ const envSchema = z.object({
     SMTP_PORT: z.string().default("587"),
     SMTP_USER: z.string().default(""),
     SMTP_PASS: z.string().default(""),
-    APP_URL: z.string().default("http://localhost:3000"),
+    APP_URL: z.string().default(process.env.NODE_ENV === "production" ? "https://big4.co.in" : "http://localhost:3000"),
     CLOUDINARY_CLOUD_NAME: z.string().min(1, "CLOUDINARY_CLOUD_NAME is required"),
     CLOUDINARY_API_KEY: z.string().min(1, "CLOUDINARY_API_KEY is required"),
     CLOUDINARY_API_SECRET: z.string().min(1, "CLOUDINARY_API_SECRET is required"),
-    STOREFRONT_URL: z.string().default("http://localhost:3001"),
+    STOREFRONT_URL: z.string().default(process.env.NODE_ENV === "production" ? "https://big4.co.in" : "http://localhost:3001"),
     REVALIDATE_SECRET: z.string().default("big4_secret_revalidate_key"),
     NODE_ENV: z
         .enum(["development", "production", "test"])

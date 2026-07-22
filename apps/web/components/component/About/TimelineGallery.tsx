@@ -11,11 +11,11 @@ if (typeof window !== "undefined") {
 }
 
 const images = [
-  { src: "/77.webp", ratio: 170 / 125, align: "start" as const },
-  { src: "/78.webp", ratio: 190 / 120, align: "end" as const },
-  { src: "/79.webp", ratio: 170 / 125, align: "start" as const },
-  { src: "/80.webp", ratio: 190 / 215, align: "end" as const },
-  { src: "/81.jpg", ratio: 170 / 115, align: "start" as const },
+  { src: "/images/products/77.webp", ratio: 170 / 125, align: "start" as const },
+  { src: "/images/products/78.webp", ratio: 190 / 120, align: "end" as const },
+  { src: "/images/products/79.webp", ratio: 170 / 125, align: "start" as const },
+  { src: "/images/products/80.webp", ratio: 190 / 215, align: "end" as const },
+  { src: "/images/products/81.jpg", ratio: 170 / 115, align: "start" as const },
 ];
 
 function RevealImage({ src, ratio }: { src: string; ratio: number }) {
