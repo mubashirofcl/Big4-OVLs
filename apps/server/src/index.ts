@@ -46,7 +46,11 @@ app.use('/api/offers', offerRoutes);
 // Mount admin routes
 app.use('/api/admin', adminRoutes);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
+
+export default app;
 
