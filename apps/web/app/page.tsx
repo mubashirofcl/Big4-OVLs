@@ -3,6 +3,7 @@ import Header from "@/components/component/Home/Header";
 import Hero from "@/components/component/Home/Hero";
 import { FeaturedProducts } from "@/components/features/products/FeaturedProducts";
 import OfferCarousel from "@/components/component/Home/OfferCarousel";
+import { getOffers } from "@/lib/api";
 import AboutSection from "@/components/component/Home/AboutSection";
 import BrandsSection from "@/components/component/Home/Brands";
 import Categories from "@/components/component/Home/Categories";
@@ -13,7 +14,9 @@ import SiteFooter from "@/components/component/Home/Footer";
 import ThreeDComponent from "@/components/ThreeDComponent";
 import PageLoader from "@/components/ui/PageLoader";
 
-export default function Home() {
+export default async function Home() {
+    const { data: offers } = await getOffers();
+
     return (
         <>
             <PageLoader />
@@ -28,7 +31,7 @@ export default function Home() {
 
                 <Categories />
 
-                <OfferCarousel />
+                <OfferCarousel offers={offers} />
 
                 <AboutSection />
 

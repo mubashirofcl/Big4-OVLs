@@ -199,8 +199,23 @@ export async function getCategories(): Promise<{ data: Category[] }> {
  */
 export async function getOffers(): Promise<{ data: any[] }> {
   try {
+    const now = new Date();
     const rawOffers = await prisma.offer.findMany({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        OR: [
+          { startDate: null },
+          { startDate: { lte: now } }
+        ],
+        AND: [
+          {
+            OR: [
+              { endDate: null },
+              { endDate: { gte: now } }
+            ]
+          }
+        ]
+      },
       orderBy: { displayOrder: "asc" },
     });
 

@@ -3,15 +3,11 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { getOffers } from "@/lib/api";
 import Link from "next/link";
 import Image from "next/image";
 import { siteConfig } from "@/lib/config/site";
 
-export default function OfferCarousel() {
-  const [offers, setOffers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
+export default function OfferCarousel({ offers }: { offers: any[] }) {
   const options = useMemo(() => ({ loop: true }), []);
   const plugins = useMemo(() => [Autoplay({ delay: 5000, stopOnInteraction: true })], []);
   const [emblaRef, emblaApi] = useEmblaCarousel(options, plugins);
@@ -34,25 +30,6 @@ export default function OfferCarousel() {
     emblaApi.on("reInit", onSelect);
   }, [emblaApi, onSelect]);
 
-  useEffect(() => {
-    async function loadOffers() {
-      try {
-        const res = await getOffers();
-        setOffers(res.data || []);
-      } catch (error) {
-        console.error("Failed to load offers:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadOffers();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="w-full bg-muted animate-pulse h-[50vw] md:h-[33vw] max-h-[600px] min-h-[300px]" />
-    );
-  }
 
   if (!offers || offers.length === 0) {
     return null; // Don't show carousel if no active offers

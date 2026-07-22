@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -17,6 +17,9 @@ export async function POST(req: NextRequest) {
     }
 
     tags.forEach((tag) => {
+      if (tag === "offers" || tag === "products") {
+        revalidatePath("/");
+      }
       (revalidateTag as any)(tag);
     });
 
