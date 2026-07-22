@@ -1,5 +1,14 @@
 import { z } from "zod";
-import { OfferLinkType } from "@prisma/client";
+
+export const OfferLinkType = {
+  NONE: "NONE",
+  WHATSAPP: "WHATSAPP",
+  EXTERNAL_URL: "EXTERNAL_URL",
+  PRODUCT: "PRODUCT",
+  CATEGORY: "CATEGORY",
+} as const;
+
+export type OfferLinkType = keyof typeof OfferLinkType;
 
 export const offerSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -7,7 +16,7 @@ export const offerSchema = z.object({
   discountText: z.string().optional().nullable(),
   bannerImage: z.string().min(1, "Banner image is required"),
   bannerImageMobile: z.string().optional().nullable(),
-  linkType: z.nativeEnum(OfferLinkType),
+  linkType: z.enum(["NONE", "WHATSAPP", "EXTERNAL_URL", "PRODUCT", "CATEGORY"]),
   linkValue: z.string().optional().nullable(),
   isActive: z.boolean().default(true),
   displayOrder: z.number().int().default(0),
