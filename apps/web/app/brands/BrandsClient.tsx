@@ -10,7 +10,9 @@ import Navbar from "@/components/component/Home/Navbar";
 import SiteFooter from "@/components/component/Home/Footer";
 import PageLoader from "@/components/ui/PageLoader";
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const availableImages = [
   "/images/products/44.webp",

@@ -5,7 +5,9 @@ import { useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 import img1 from "@/public/images/hero/animation-2/677276fd561b48d392692e32_h-g-image-1-min.png";
 import img2 from "@/public/images/hero/animation-2/677276fd561b48d392692e34_h-g-image-2-min.png";
 import img3 from "@/public/images/hero/animation-2/677276fd561b48d392692e35_h-g-image-3-min.png";
