@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getCategories, getProducts } from "@/lib/api";
 import { ProductFilters } from "@/components/features/products/ProductFilters";
 import { ProductGrid } from "@/components/features/products/ProductGrid";
@@ -95,47 +96,56 @@ export default async function ProductsPage({
               
               <div className="flex flex-col w-full md:w-auto sm:flex-row items-center gap-3">
                 <div className="w-full sm:w-auto sticky top-[4.5rem] z-40 lg:static bg-background/95 backdrop-blur py-2 lg:py-0">
-                  <ProductSearch />
+                  <Suspense fallback={<div className="h-10 w-full sm:w-64 bg-muted/40 rounded-full animate-pulse" />}>
+                    <ProductSearch />
+                  </Suspense>
                 </div>
                 <div className="hidden lg:flex items-center gap-4">
-                  <ProductFilters 
-                    categories={categories} 
-                    brands={brands} 
-                    materials={materials}
-                    finishes={finishes}
-                    colors={colors}
-                    sizes={sizes}
-                  />
-                  <SortSelect />
+                  <Suspense fallback={<div className="h-10 w-24 bg-muted/40 rounded-lg animate-pulse" />}>
+                    <ProductFilters 
+                      categories={categories} 
+                      brands={brands} 
+                      materials={materials}
+                      finishes={finishes}
+                      colors={colors}
+                      sizes={sizes}
+                    />
+                  </Suspense>
+                  <Suspense fallback={<div className="h-10 w-36 bg-muted/40 rounded-lg animate-pulse" />}>
+                    <SortSelect />
+                  </Suspense>
                 </div>
               </div>
             </div>
-            
 
-            
-            <ActiveFilterChips />
+            <Suspense fallback={null}>
+              <ActiveFilterChips />
+            </Suspense>
           </FadeIn>
 
-          <MobileProductControls 
-            categories={categories} 
-            brands={brands} 
-            materials={materials}
-            finishes={finishes}
-            colors={colors}
-            sizes={sizes}
-          />
+          <Suspense fallback={null}>
+            <MobileProductControls 
+              categories={categories} 
+              brands={brands} 
+              materials={materials}
+              finishes={finishes}
+              colors={colors}
+              sizes={sizes}
+            />
+          </Suspense>
 
           <div className="flex flex-col lg:flex-row gap-8">
-            
             <div className="flex-1 w-full">
               {productsRes ? (
                 productsRes.data.length > 0 ? (
                   <>
                     <ProductGrid products={productsRes.data} />
-                    <ProductPagination 
-                      currentPage={productsRes.pagination.page} 
-                      totalPages={productsRes.pagination.totalPages} 
-                    />
+                    <Suspense fallback={null}>
+                      <ProductPagination 
+                        currentPage={productsRes.pagination.page} 
+                        totalPages={productsRes.pagination.totalPages} 
+                      />
+                    </Suspense>
                   </>
                 ) : (
                   <div className="py-24 flex flex-col items-center justify-center text-center bg-muted/20 rounded-[var(--radius-xl)] border border-border/50 px-4">
