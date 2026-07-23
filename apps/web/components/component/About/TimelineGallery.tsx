@@ -32,8 +32,8 @@ function RevealImage({ src, ratio }: { src: string; ratio: number }) {
 
   return (
     <div ref={ref} className="relative w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl" style={{ aspectRatio: ratio }}>
-      <motion.div style={{ clipPath }} className="absolute inset-0">
-        <motion.div style={{ y }} className="absolute inset-0 h-[124%] -top-[12%]">
+      <motion.div style={{ clipPath } as any} className="absolute inset-0">
+        <motion.div style={{ y } as any} className="absolute inset-0 h-[124%] -top-[12%]">
           <Image src={src} alt="" fill sizes="(max-width: 1023px) 60vw, 484px" className="object-cover" />
         </motion.div>
       </motion.div>
