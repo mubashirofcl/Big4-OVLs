@@ -49,18 +49,31 @@ export async function POST(req: NextRequest) {
 
     if (smtpHost && smtpUser && smtpPass) {
       try {
-        const transporter = nodemailer.createTransport({
-          host: smtpHost,
-          port: smtpPort,
-          secure: smtpPort === 465, // true for 465, false for 587/25
-          auth: {
-            user: smtpUser,
-            pass: smtpPass,
-          },
-          tls: {
-            rejectUnauthorized: false // avoids SSL certificate issues
-          }
-        });
+        const cleanPass = smtpPass.replace(/\s+/g, "");
+        const isGmail = smtpHost.toLowerCase().includes("gmail");
+
+        const transporter = nodemailer.createTransport(
+          isGmail
+            ? {
+                service: "gmail",
+                auth: {
+                  user: smtpUser,
+                  pass: cleanPass,
+                },
+              }
+            : {
+                host: smtpHost,
+                port: smtpPort,
+                secure: smtpPort === 465,
+                auth: {
+                  user: smtpUser,
+                  pass: cleanPass,
+                },
+                tls: {
+                  rejectUnauthorized: false,
+                },
+              }
+        );
 
         const mailOptions = {
           from: `"Big4 Website" <${smtpUser}>`,
@@ -80,7 +93,8 @@ export async function POST(req: NextRequest) {
           `,
         };
 
-        await transporter.sendMail(mailOptions);
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Nodemailer email sent successfully! MessageId:", info.messageId);
       } catch (emailError) {
         console.error("Failed to send email via nodemailer:", emailError);
       }
