@@ -42,22 +42,31 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Send email via Nodemailer
-    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+    const smtpPort = Number(process.env.SMTP_PORT) || 465;
+
+    if (smtpHost && smtpUser && smtpPass) {
       try {
         const transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST,
-          port: Number(process.env.SMTP_PORT) || 465,
-          secure: Number(process.env.SMTP_PORT) === 465, // true for 465, false for other ports
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpPort === 465, // true for 465, false for 587/25
           auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
+            user: smtpUser,
+            pass: smtpPass,
           },
+          tls: {
+            rejectUnauthorized: false // avoids SSL certificate issues
+          }
         });
 
         const mailOptions = {
-          from: `"Big4 Website" <${process.env.SMTP_USER}>`, // sender address
-          to: process.env.SMTP_TO || "big4tiles@gmail.com", // list of receivers
-          subject: `New Website Lead: ${data.interest || "Contact Form"} - ${data.name}`, // Subject line
+          from: `"Big4 Website" <${smtpUser}>`,
+          to: process.env.SMTP_TO || "big4tiles@gmail.com",
+          replyTo: data.email,
+          subject: `New Website Lead: ${data.interest || "Contact Form"} - ${data.name}`,
           html: `
             <h3>New Contact Form Submission</h3>
             <p><strong>Name:</strong> ${data.name}</p>
@@ -74,11 +83,13 @@ export async function POST(req: NextRequest) {
         await transporter.sendMail(mailOptions);
       } catch (emailError) {
         console.error("Failed to send email via nodemailer:", emailError);
-        // We'll still return success if the lead was saved to DB, or we can choose to fail.
-        // Usually, failing the request if email fails is better so user knows it didn't go through.
       }
     } else {
-      console.warn("SMTP credentials not configured. Skipping email notification.");
+      console.warn("SMTP credentials missing! Missing:", {
+        SMTP_HOST: !!smtpHost,
+        SMTP_USER: !!smtpUser,
+        SMTP_PASS: !!smtpPass
+      });
     }
 
     return NextResponse.json({ success: true, message: "Message sent successfully" });
