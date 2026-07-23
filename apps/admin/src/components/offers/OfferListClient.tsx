@@ -132,14 +132,45 @@ export function OfferListClient({ initialOffers }: { initialOffers: Offer[] }) {
             {/* Mobile View */}
             <div className="mobile-only">
                 {offers.map((offer, index) => (
-                    <div key={offer.id} style={{ display: "flex", flexDirection: "column", gap: 12, padding: 16, borderTop: index > 0 ? "1px solid var(--border-default)" : "none" }}>
-                        <div style={{ display: "flex", gap: 12 }}>
-                            <div style={{ width: 120, height: 40, borderRadius: "var(--radius-sm)", background: "var(--skeleton-base)", overflow: "hidden", flexShrink: 0 }}>
-                                <img src={offer.bannerImage} alt={offer.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                            </div>
-                            <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                                <div style={{ fontWeight: 600, color: "var(--text-primary)", fontSize: 14 }}>{offer.title}</div>
-                                <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
+                    <div
+                        key={offer.id}
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 14,
+                            padding: 16,
+                            borderTop: index > 0 ? "1px solid var(--border-default)" : "none",
+                            background: "var(--bg-card)",
+                        }}
+                    >
+                        {/* Banner Image */}
+                        <div
+                            style={{
+                                width: "100%",
+                                aspectRatio: "3 / 1",
+                                borderRadius: "var(--radius-md)",
+                                background: "var(--skeleton-base)",
+                                overflow: "hidden",
+                                border: "1px solid var(--border-default)",
+                            }}
+                        >
+                            <img
+                                src={offer.bannerImage}
+                                alt={offer.title}
+                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                            />
+                        </div>
+
+                        {/* Title, Badges & Reorder Controls */}
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+                            <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: 600, color: "var(--text-primary)", fontSize: 15 }}>
+                                    {offer.title}
+                                </div>
+                                <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 2 }}>
+                                    {offer.linkType !== "NONE" ? `Link: ${offer.linkType}` : "No Link"}
+                                </div>
+                                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginTop: 8 }}>
                                     <span className={`badge ${offer.isActive ? "badge-active" : "badge-archived"}`}>
                                         {offer.isActive ? "Active" : "Inactive"}
                                     </span>
@@ -150,10 +181,87 @@ export function OfferListClient({ initialOffers }: { initialOffers: Offer[] }) {
                                     )}
                                 </div>
                             </div>
+
+                            {/* Mobile Reorder Controls */}
+                            <div style={{ display: "flex", alignItems: "center", gap: 4, background: "var(--bg-canvas)", padding: "4px 8px", borderRadius: "var(--radius-pill)", border: "1px solid var(--border-default)" }}>
+                                <button
+                                    disabled={index === 0 || isPending}
+                                    onClick={() => moveOffer(index, -1)}
+                                    aria-label="Move Up"
+                                    style={{
+                                        background: "none",
+                                        border: "none",
+                                        cursor: index === 0 || isPending ? "default" : "pointer",
+                                        opacity: index === 0 || isPending ? 0.3 : 1,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        padding: 4,
+                                    }}
+                                >
+                                    <ArrowUp size={16} />
+                                </button>
+                                <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", padding: "0 2px" }}>
+                                    {index + 1}
+                                </span>
+                                <button
+                                    disabled={index === offers.length - 1 || isPending}
+                                    onClick={() => moveOffer(index, 1)}
+                                    aria-label="Move Down"
+                                    style={{
+                                        background: "none",
+                                        border: "none",
+                                        cursor: index === offers.length - 1 || isPending ? "default" : "pointer",
+                                        opacity: index === offers.length - 1 || isPending ? 0.3 : 1,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        padding: 4,
+                                    }}
+                                >
+                                    <ArrowDown size={16} />
+                                </button>
+                            </div>
                         </div>
-                        <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-                            <Link href={`/admin/offers/${offer.id}`} style={{ flex: 1, textAlign: "center", padding: "8px", borderRadius: "var(--radius-pill)", border: "1px solid var(--border-default)", background: "var(--bg-card)", fontSize: 13, fontWeight: 600, textDecoration: "none", color: "var(--text-primary)" }}>Edit</Link>
-                            <button onClick={() => handleDelete(offer)} style={{ flex: 1, textAlign: "center", padding: "8px", borderRadius: "var(--radius-pill)", border: "1px solid var(--danger-soft)", color: "var(--danger)", background: "var(--danger-soft)", fontSize: 13, fontWeight: 600 }}>Delete</button>
+
+                        {/* Action Buttons */}
+                        <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
+                            <Link
+                                href={`/admin/offers/${offer.id}`}
+                                prefetch={true}
+                                style={{
+                                    flex: 1,
+                                    textAlign: "center",
+                                    padding: "9px 16px",
+                                    borderRadius: "var(--radius-pill)",
+                                    border: "1px solid var(--border-default)",
+                                    background: "var(--bg-canvas)",
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    textDecoration: "none",
+                                    color: "var(--text-primary)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                Edit
+                            </Link>
+                            <button
+                                onClick={() => handleDelete(offer)}
+                                style={{
+                                    flex: 1,
+                                    textAlign: "center",
+                                    padding: "9px 16px",
+                                    borderRadius: "var(--radius-pill)",
+                                    border: "1px solid var(--danger-soft)",
+                                    color: "var(--danger)",
+                                    background: "var(--danger-soft)",
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    cursor: "pointer",
+                                }}
+                            >
+                                Delete
+                            </button>
                         </div>
                     </div>
                 ))}

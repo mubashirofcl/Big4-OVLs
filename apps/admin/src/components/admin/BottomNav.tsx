@@ -66,6 +66,7 @@ export function BottomNav({ userEmail, userName }: BottomNavProps) {
                         <Link
                             key={item.href}
                             href={item.href}
+                            prefetch={true}
                             style={{
                                 display: "flex",
                                 flexDirection: "column",

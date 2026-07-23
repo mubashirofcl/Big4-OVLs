@@ -242,7 +242,7 @@ export function BannerUploader({
                 </div>
 
                 {/* Mobile Banner Display */}
-                <div style={{ flex: "1 1 200px", maxWidth: "250px" }}>
+                <div className="w-full sm:w-[220px] shrink-0">
                     <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "var(--text-primary)", marginBottom: 6 }}>
                         Mobile Banner (4:5)
                     </label>

@@ -14,7 +14,7 @@ export default async function OffersPage() {
 
     return (
         <div>
-            <div style={{ marginBottom: 24, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                     <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0, color: "var(--text-primary)" }}>
                         Offers
@@ -25,9 +25,11 @@ export default async function OffersPage() {
                 </div>
                 <Link
                     href="/admin/offers/new"
+                    prefetch={true}
                     style={{
                         display: "inline-flex",
                         alignItems: "center",
+                        justifyContent: "center",
                         gap: 6,
                         padding: "10px 20px",
                         background: "var(--hero-bg)",
@@ -37,6 +39,8 @@ export default async function OffersPage() {
                         fontSize: 14,
                         fontWeight: 600,
                         transition: "background 150ms ease",
+                        width: "fit-content",
+                        whiteSpace: "nowrap",
                     }}
                 >
                     + Add Offer

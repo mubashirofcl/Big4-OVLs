@@ -88,6 +88,7 @@ export function Sidebar({ open, onClose, isMobile }: SidebarProps) {
                             <Link
                                 key={item.href}
                                 href={item.href}
+                                prefetch={true}
                                 onClick={isMobile ? onClose : undefined}
                                 style={{
                                     display: "flex",

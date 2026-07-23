@@ -242,7 +242,7 @@ export function OfferForm({ initialData }: OfferFormProps) {
                             If unchecked, this banner will never be shown on the storefront, regardless of the dates below.
                         </p>
 
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 8 }}>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                             <div>
                                 <label htmlFor="startDate" style={labelStyle}>Start Date (Optional)</label>
                                 <input
