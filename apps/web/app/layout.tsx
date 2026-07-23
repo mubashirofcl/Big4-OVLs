@@ -3,7 +3,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
 import { siteConfig } from "@/lib/config/site";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -105,7 +105,22 @@ export default function RootLayout({
           }}
         />
         {children}
-        <GoogleAnalytics gaId="G-WLEQPP4JVR" />
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-WLEQPP4JVR"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-WLEQPP4JVR');
+            `,
+          }}
+        />
       </body>
     </html>
   );
