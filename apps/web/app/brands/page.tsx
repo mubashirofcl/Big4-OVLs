@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import BrandsClient from "./BrandsClient";
 import { siteConfig } from "@/lib/config/site";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Authorized Brands | Kajaria, Simpolo & Grohe Dealer in Sullia",
   description:
