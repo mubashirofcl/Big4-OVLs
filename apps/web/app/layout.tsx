@@ -59,8 +59,8 @@ export default function RootLayout({
   const storeImageUrl = `${siteConfig.website.replace(/\/$/, "")}/images/schema/schema-store.jpg`;
 
   return (
-    <html lang="en" className={cn(inter.variable, "dark")}>
-      <body className="min-h-full flex flex-col">
+    <html lang="en" className={cn(inter.variable, "dark")} suppressHydrationWarning>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

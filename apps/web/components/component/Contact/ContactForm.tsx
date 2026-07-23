@@ -61,6 +61,7 @@ function InputField({
         )}
         <input
           id={id}
+          suppressHydrationWarning
           required={required}
           type={type}
           placeholder={placeholder}
@@ -321,6 +322,7 @@ export default function ContactForm() {
 
           <div className="mt-8 flex flex-col sm:flex-row w-full max-w-[280px] sm:max-w-none mx-auto items-center justify-center gap-4">
             <button
+              suppressHydrationWarning
               onClick={() => {
                 const el = document.getElementById("contact-form-section");
                 if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -487,7 +489,7 @@ export default function ContactForm() {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4 relative z-10">
+                <form onSubmit={handleSubmit} suppressHydrationWarning className="flex flex-col gap-4 relative z-10">
                   <div className="mb-2">
                     <h3 className="font-black uppercase tracking-[-0.02em] text-xl text-white">Send a Message</h3>
                     <p className="text-[11px] text-[#555] mt-1">Fill out the form below and we will get back to you shortly.</p>
@@ -533,6 +535,7 @@ export default function ContactForm() {
                       </label>
                       <select
                         id="interest-select"
+                        suppressHydrationWarning
                         value={form.interest}
                         onChange={(e) => set("interest")(e.target.value)}
                         className="font-inter w-full bg-[#0d0d0d] border border-[#1e1e1e] focus:border-white rounded-sm py-2.5 px-3 text-xs text-white outline-none transition-colors duration-300 cursor-pointer"
@@ -554,6 +557,7 @@ export default function ContactForm() {
                     </label>
                     <textarea
                       id="project-details"
+                      suppressHydrationWarning
                       required
                       rows={4}
                       placeholder="Briefly describe your vision, space requirements, and timeline…"
@@ -567,6 +571,7 @@ export default function ContactForm() {
                   <div className="flex flex-col gap-3 pt-2 mt-auto">
                     <button
                       type="submit"
+                      suppressHydrationWarning
                       disabled={sending}
                       className="group w-full py-3.5 overflow-hidden bg-white text-black uppercase tracking-[0.25em] text-[10px] font-bold flex items-center justify-center gap-2.5 hover:bg-gray-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-sm"
                     >

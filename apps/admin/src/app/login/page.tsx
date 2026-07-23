@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import { loginSchema } from "@/validations/auth.validation";
 
@@ -177,18 +178,30 @@ export default function LoginPage() {
                     </div>
 
                     <div style={{ marginBottom: 24 }}>
-                        <label
-                            htmlFor="password"
-                            style={{
-                                display: "block",
-                                fontSize: 13,
-                                fontWeight: 600,
-                                color: "var(--text-primary)",
-                                marginBottom: 6,
-                            }}
-                        >
-                            Password
-                        </label>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                            <label
+                                htmlFor="password"
+                                style={{
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    color: "var(--text-primary)",
+                                }}
+                            >
+                                Password
+                            </label>
+                            <Link
+                                href="/forgot-password"
+                                style={{
+                                    fontSize: 13,
+                                    fontWeight: 500,
+                                    color: "var(--accent)",
+                                    textDecoration: "none",
+                                    transition: "var(--transition-fast)",
+                                }}
+                            >
+                                Forgot password?
+                            </Link>
+                        </div>
                         <input
                             id="password"
                             type="password"

@@ -110,6 +110,7 @@ export default function SiteFooter({
 
           <div className="flex flex-col items-center gap-3">
             <button
+              suppressHydrationWarning
               onClick={scrollToTop}
               className="
                 flex
@@ -161,6 +162,7 @@ export default function SiteFooter({
 
             <div className="flex flex-col items-center gap-28">
               <button
+                suppressHydrationWarning
                 onClick={scrollToTop}
                 className="
                   flex

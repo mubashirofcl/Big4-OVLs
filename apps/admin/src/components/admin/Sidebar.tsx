@@ -11,6 +11,7 @@ const NAV_ITEMS = [
     { href: "/admin/brands", label: "Brands", icon: BrandIcon },
     { href: "/admin/categories", label: "Categories", icon: CategoryIcon },
     { href: "/admin/offers", label: "Offers", icon: OfferIcon },
+    { href: "/admin/change-password", label: "Change Password", icon: KeyIcon },
 ];
 
 interface SidebarProps {
@@ -299,6 +300,15 @@ function BrandIcon({ active }: { active: boolean }) {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? "var(--hero-text)" : "var(--text-secondary)"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
             <line x1="7" y1="7" x2="7.01" y2="7" />
+        </svg>
+    );
+}
+
+function KeyIcon({ active }: { active: boolean }) {
+    return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? "var(--hero-text)" : "var(--text-secondary)"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m21 2-2 2m-1.5 1.5L16 7v2h2v2h2v2h2v-2l1.5-1.5M15 2 7.5 9.5a5 5 0 1 0 7 7L22 9V2h-7z" />
+            <circle cx="7.5" cy="16.5" r="1.5" />
         </svg>
     );
 }

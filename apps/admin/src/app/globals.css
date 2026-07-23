@@ -16,6 +16,8 @@
     --text-secondary: #52525B;
     --text-muted: #8E8E93;
     --text-inverse: #FFFFFF;
+    --accent: #2563EB;
+    --accent-hover: #1D4ED8;
     --border-default: #E4E4E7;
     --border-strong: #D4D4D8;
     --divider: #F0F0F2;
@@ -64,6 +66,8 @@
     --text-secondary: #A1A1AA;
     --text-muted: #6E6E76;
     --text-inverse: #111113;
+    --accent: #3B82F6;
+    --accent-hover: #60A5FA;
     --border-default: #26262A;
     --border-strong: #33333A;
     --divider: #202024;
@@ -152,6 +156,25 @@ body {
     font-family: var(--font-sans, "Inter", system-ui, -apple-system, sans-serif);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+input, select, textarea {
+    color: var(--text-primary);
+    background-color: var(--bg-input);
+}
+
+::placeholder, input::placeholder, textarea::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 1 !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--text-primary) !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--bg-input) inset !important;
+    transition: background-color 5000s ease-in-out 0s !important;
 }
 
 *:focus-visible {
