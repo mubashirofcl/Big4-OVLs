@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Navbar from "@/components/component/Home/Navbar";
 import SiteFooter from "@/components/component/Home/Footer";
