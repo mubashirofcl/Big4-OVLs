@@ -26,7 +26,7 @@ export default function Overlay({ heroRef }: { heroRef: React.RefObject<HTMLDivE
       
       {/* PHASE 1 */}
       <motion.div
-        style={{ opacity: opacity1, willChange: 'opacity, transform' }}
+        style={{ opacity: opacity1, willChange: 'opacity, transform' } as any}
         className="absolute inset-0 flex items-center justify-center"
       >
         <span 
@@ -39,7 +39,7 @@ export default function Overlay({ heroRef }: { heroRef: React.RefObject<HTMLDivE
 
       {/* PHASE 2 */}
       <motion.div
-        style={{ opacity: opacity2, y: y2, willChange: 'opacity, transform' }}
+        style={{ opacity: opacity2, y: y2, willChange: 'opacity, transform' } as any}
         className="absolute inset-0 flex flex-col items-center justify-center text-center space-y-4 px-4"
       >
         <p className="text-gray-400 font-medium tracking-wide uppercase text-sm md:text-base">
@@ -58,7 +58,7 @@ export default function Overlay({ heroRef }: { heroRef: React.RefObject<HTMLDivE
 
       {/* PHASE 3 */}
       <motion.div
-        style={{ opacity: opacity3, willChange: 'opacity, transform' }}
+        style={{ opacity: opacity3, willChange: 'opacity, transform' } as any}
         className="absolute inset-0 flex items-center justify-center text-center px-4"
       >
         <h2 
@@ -71,7 +71,7 @@ export default function Overlay({ heroRef }: { heroRef: React.RefObject<HTMLDivE
 
       {/* PHASE 4 */}
       <motion.div
-        style={{ opacity: opacity4, willChange: 'opacity, transform' }}
+        style={{ opacity: opacity4, willChange: 'opacity, transform' } as any}
         className="absolute inset-0 flex flex-col items-center justify-center text-center space-y-6 px-4"
       >
         <h2 
